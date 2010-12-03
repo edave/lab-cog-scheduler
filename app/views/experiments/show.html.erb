@@ -1,0 +1,38 @@
+<div class="column-left">
+<div class="slots">
+	<%= render :partial => '/slots/form', :locals => {:experiment => @experiment} %>
+	<% unless @experiment.slots.empty? %>
+	<br />
+	<h3>Slots</h3>
+	<%= render :partial => '/slots/slot_table', :locals => {:slots => @experiment.slots, :experiment => @experiment} %>
+	<% else %>
+	<h3>No Slots</h3>
+	<% end %>
+</div>
+</div>
+<div class="column-right">
+<div class="detail"><span class="title">Compensation:</span> $<%= @experiment.compensation %></div>
+<div class="detail"><span class="title">Time per slot:</span> <%= @experiment.human_time_length %></div>
+<div class="detail"><span class="title">Max # of participants: </span><%= @experiment.num_subjects %></div>
+<div class="detail"><span class="title">Max # of participants per slot: </span><%= @experiment.num_subjects_per_slot %></div>
+<div class="detail"><span class="title">Automatically close a slot if it starts within</span> <%= @experiment.slot_close_time %> mins</div>
+<div class="detail"><span class="title">Contact:</span> <%= @experiment.user.email %></div>
+<div class="detail"><span class="title">Location:</span> <%= @experiment.location.human_location if @experiment.location != nil %></div>
+<div class="detail"><span class="title">Calendar:</span> <%= @experiment.google_calendar.name if @experiment.google_calendar != nil %></div>
+<div class="detail"><span class="title">Open?</span> <% if @experiment.open %><span class="open">YES</span>, participants can signup<% else %><span class="closed">NO</span>, participants cannot see or signup.<% end %></div>
+<div class="title">Description</div>
+<div class="desc" style="padding:10px; border: 1px dashed #cacaca"><%= markdown(@experiment.desc) %></div>
+<br/>
+<div><%= link_to 'Preview signup page', :action=>:participate, :id => @experiment.hashed_id %></div><br />
+<div><%= link_to 'Preview confirmation page', :controller => :subjects, :action=>:dummy_confirmation, :id => @experiment.hashed_id %></div>
+</div>
+<script>
+$(document).ready(function(){
+  $('.ajax-form')
+    .bind("ajax:success", function(evt, data, status, xhr){
+      $('table#slots > tbody:last').prepend(xhr.responseText);
+	  
+	});
+$('#slot_date').datepicker();
+});
+</script>

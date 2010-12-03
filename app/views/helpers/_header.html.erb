@@ -1,0 +1,26 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title><% if development_env? %>LabCog (DEV)<% else %>LabCog<% end %> <%= sanitize(header_page_title) %></title>
+		<% if production_env? %>
+        <script src="https://www.google.com/jsapi">
+        </script>
+        <script>
+            google.load("jquery", "1.4.4");
+			google.load("jqueryui", "1.8.6");
+        </script>
+		<% else %>
+        	<%= javascript_include_tag 'jquery-1.4.4.min', 'jquery-ui-1.8.6.custom.min' %>
+        <% end %>
+        <%= javascript_include_tag 'date-en-US', 'jquery.highlight-3', 'jquery.maskedinput-1.2.2.min', :defaults %>
+        <%= stylesheet_link_tag 'yui-css-reset-font.css' %>
+		<%= stylesheet_link_tag 'default' %>
+		<%= stylesheet_link_tag 'jquery-ui/jquery-ui-1.8.6.custom.css' %>
+		<!--[if IE 7]><%= stylesheet_link_tag 'default-IE7' %><![endif]--><!--[if IE 8]><%= stylesheet_link_tag 'default-IE8' %><![endif]-->
+		<% if use_markdown_editor? %>
+			<%= javascript_include_tag 'markitup/jquery.markitup.pack.js', 'markitup/sets/markdown/set.js' %>
+			<%= stylesheet_link_tag '/javascripts/markitup/skins/simple/style.css', '/javascripts/markitup/sets/markdown/style.css' %>
+		<% end %>
+		<%= csrf_meta_tag %> 
+</head>

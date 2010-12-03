@@ -1,0 +1,49 @@
+<%= render :partial => '/helpers/header' %>
+<body>
+<div id="header-wrapper">
+<div class="application" id="header">
+	<div id="banner" style="background: url('/images/logo.png') left top no-repeat;">Lab Cog!</div>
+	<div class="messages">
+		<% if notice %><div class="notice"><%= notice %></div><% end %>
+	 	<% if alert %><div class="alert"><%= alert %></div><% end %>
+	</div>
+	<div class="tabs">
+		<div id="current_user"><%= current_user.user_name if current_user %></div>	
+		<ul>
+			<a href="/settings"><li>Settings</li></a>
+			<a href="/help"><li>Help</li></a>
+			<li><%= link_to('Sign out', destroy_user_session_path)  %></li>
+		</ul>
+	</div>
+	</div>
+</div>
+<div id="top-tray">
+	<a id="dashboard" href="/experiments"><div class="title">Dashboard</div></a>
+	<div class="page-title" ><%= sanitize(page_title) %></div>
+</div>
+<br style="clear:both"/>
+<div id="content-wrapper">
+	<div id="sidebar" class="column-left">
+	<div class="upcoming box">
+		<div class="title">Upcoming</div>
+	
+	</div>
+	<div class="experiments box">
+		<div class="title">Experiments</div>
+		<%= render(:partial => '/experiments/list', :locals => {:experiments => current_user.experiments}) if current_user %>
+	</div>
+	</div>
+<div id="content" class="column-right">
+  <%= yield %>
+</div>
+<br style="clear:both" />
+</div>
+<div id="footer-wrapper">
+<div id="footer">
+	<a href="/">Lab Cog Co. &copy; 2010 </a>
+    | <a href="javascript:none;"></a>
+</div>
+</div>
+</div>
+</body>
+</html>

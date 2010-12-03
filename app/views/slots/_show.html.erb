@@ -1,0 +1,34 @@
+<%# 
+  Display a single slot
+  render :partial => "slots/show", 
+         :locals => {:slot => @my_slot}
+-%>
+<tr class='slot <% if slot.expired? %>expired-slot<% end %>' data-slot="<%= slot.hashed_id %>" >
+	<td class='collapse-icon' ><% if slot.subjects.count > 0 %><div class="collapse-icon collapsed" data-collapse-element-id="slot-participants-<%= slot.hashed_id %>" > </div><% end %></td>
+  	<td><% if slot.cancelled %><s><%= slot.human_date %></s><% else %><%= slot.human_date %><% end %></td>
+	<td><span class="title"><%= slot.human_time %></span></td>
+	<td class='<% if slot.empty? %>open<% end %>'>
+		<% unless slot.empty? %>
+			<span class="title"><%= slot.subjects.count %></span> participant<%= 's' if slot.subjects.count > 1 %>
+			<% else %>
+			empty
+		<% end %>
+	</td>
+    <td><% unless slot.expired? %>
+		<%= link_to 'Edit', edit_slot_path(slot) %>
+		<%= link_to 'Destroy', slot, :confirm => 'Are you sure?', :method => :delete %>
+		<% end %></td>
+</tr>
+<tr id="slot-participants-<%= slot.hashed_id %>" style="display:none">
+<td colspan=6 >
+	<div class="participants">
+	<% slot.subjects.each do |subject| %>
+		<div class="participant">
+		<%= subject.name %>
+		<%= subject.email %>
+		<%= number_to_phone(subject.phone_number) %>
+		</div>
+	<% end %>
+	</div>
+</td>
+</tr>

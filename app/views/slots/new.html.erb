@@ -1,0 +1,4 @@
+<h1>New slot</h1>
+<%= render :partial => 'form', :locals => {:slot => @slot, :experiment => @experiment} %>
+
+<%= link_to 'Back', :controller => :slots, :action => :index, :experiment => @experiment.hashed_id %>

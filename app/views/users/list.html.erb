@@ -1,0 +1,17 @@
+<div class="content" >
+<h1>User List</h1>
+<table id="default_table">
+    <thead>
+        <tr>
+            <%= render :partial => "helpers/table_header", :locals => {:label => "Username", :key_name => "login", :flip => false }%>
+		    <%= render :partial => "helpers/table_header", :locals => {:label => "Email", :key_name => "email", :flip => false }%>
+		</tr>   
+    </thead>
+<% @users.each do |user| %>
+    <tr <% unless mark_every(2) %>class="odd"<% end %>>
+        <td><a href="/user/show/<%= user.hashed_id %>" /><%= user.login %></a></td>
+        <td><%= mail_to user.email %></td>
+   </tr>
+<%end%>
+</table>
+</div>

@@ -1,0 +1,52 @@
+Rooster::Runner [2010-10-06 07:20:58 -0400]:  Scheduling RemindParticipantsTask...
+Rooster::Runner [2010-10-06 07:20:58 -0400]:  RemindParticipantsTask successfully scheduled.
+Rooster::Runner [2010-10-06 07:20:58 -0400]:  Scheduling ProcessAppointmentTask...
+Rooster::Runner [2010-10-06 07:20:58 -0400]:  ProcessAppointmentTask successfully scheduled.
+Rooster::Runner [2010-10-06 07:20:58 -0400]:  Rooster::ControlServer started on 127.0.0.1:8080...
+Rooster::Runner [2010-10-06 07:20:58 -0400]:  ProcessAppointmentTask starting at 2010-10-06 13:20:58
+Rooster::Runner [2010-10-06 07:21:03 -0400]:  ProcessAppointmentTask completed at 2010-10-06 13:21:03, 1 processed
+Rooster::Runner [2010-10-06 07:21:58 -0400]:  ProcessAppointmentTask starting at 2010-10-06 13:21:58
+Rooster::Runner [2010-10-06 07:21:58 -0400]:  ProcessAppointmentTask completed at 2010-10-06 13:21:58, 0 processed
+Rooster::Runner [2010-10-06 07:22:58 -0400]:  ProcessAppointmentTask starting at 2010-10-06 13:22:58
+Rooster::Runner [2010-10-06 07:22:58 -0400]:  ProcessAppointmentTask completed at 2010-10-06 13:22:58, 0 processed
+Rooster::Runner [2010-10-06 07:23:26 -0400]:  Connection established.  Commands:
+Rooster::Runner [2010-10-06 07:23:26 -0400]:    list                     Lists running tasks.
+Rooster::Runner [2010-10-06 07:23:26 -0400]:    stop_all                 Stops all tasks.
+Rooster::Runner [2010-10-06 07:23:26 -0400]:    start_all                Starts all available tasks.
+Rooster::Runner [2010-10-06 07:23:26 -0400]:    stop [TaskName]          Stops the specified task.
+Rooster::Runner [2010-10-06 07:23:26 -0400]:    start [TaskName]         Starts the specified task.
+Rooster::Runner [2010-10-06 07:23:26 -0400]:    restart [TaskName]       Stops then starts the specified task.
+Rooster::Runner [2010-10-06 07:23:26 -0400]:    start_tag [tag]          Starts all tasks with the specified tag.
+Rooster::Runner [2010-10-06 07:23:26 -0400]:    stop_tag [tag]           Stops all tasks with the specified tag.
+Rooster::Runner [2010-10-06 07:23:26 -0400]:    kill [TaskName]          Kills the specified task if it's currently running and unschedules it.
+Rooster::Runner [2010-10-06 07:23:26 -0400]:    quit                     Closes the connection to the control server.
+Rooster::Runner [2010-10-06 07:23:26 -0400]:    exit                     Kills the scheduler.
+Rooster::Runner [2010-10-06 07:23:26 -0400]:  Command received: exit.
+Rooster::Runner [2010-10-06 07:23:26 -0400]:  Command completed: exit.
+Rooster::Runner [2010-10-06 07:23:26 -0400]:  Connection closed.
+Rooster::Runner [2010-10-06 07:23:26 -0400]:  Rooster::Runner terminated at 2010-10-06 07:23:26 -0400
+Rooster::Runner [2010-10-24 08:17:57 -0400]:  Scheduling RemindParticipantsTask...
+Rooster::Runner [2010-10-24 08:17:57 -0400]:  RemindParticipantsTask successfully scheduled.
+Rooster::Runner [2010-10-24 08:17:57 -0400]:  Scheduling ProcessAppointmentTask...
+Rooster::Runner [2010-10-24 08:17:57 -0400]:  ProcessAppointmentTask successfully scheduled.
+Rooster::Runner [2010-10-24 08:17:57 -0400]:  Rooster::ControlServer started on 127.0.0.1:8080...
+Rooster::Runner [2010-10-24 08:17:57 -0400]:  ProcessAppointmentTask starting at 2010-10-24 13:17:57
+Rooster::Runner [2010-10-24 08:18:11 -0400]:  ProcessAppointmentTask completed at 2010-10-24 13:18:11, 1 processed
+Rooster::Runner [2010-10-24 08:18:57 -0400]:  ProcessAppointmentTask starting at 2010-10-24 13:18:57
+Rooster::Runner [2010-10-24 08:18:57 -0400]:  ProcessAppointmentTask completed at 2010-10-24 13:18:57, 0 processed
+Rooster::Runner [2010-10-24 08:19:17 -0400]:  Connection established.  Commands:
+Rooster::Runner [2010-10-24 08:19:17 -0400]:    list                     Lists running tasks.
+Rooster::Runner [2010-10-24 08:19:17 -0400]:    stop_all                 Stops all tasks.
+Rooster::Runner [2010-10-24 08:19:17 -0400]:    start_all                Starts all available tasks.
+Rooster::Runner [2010-10-24 08:19:17 -0400]:    stop [TaskName]          Stops the specified task.
+Rooster::Runner [2010-10-24 08:19:17 -0400]:    start [TaskName]         Starts the specified task.
+Rooster::Runner [2010-10-24 08:19:17 -0400]:    restart [TaskName]       Stops then starts the specified task.
+Rooster::Runner [2010-10-24 08:19:17 -0400]:    start_tag [tag]          Starts all tasks with the specified tag.
+Rooster::Runner [2010-10-24 08:19:17 -0400]:    stop_tag [tag]           Stops all tasks with the specified tag.
+Rooster::Runner [2010-10-24 08:19:17 -0400]:    kill [TaskName]          Kills the specified task if it's currently running and unschedules it.
+Rooster::Runner [2010-10-24 08:19:17 -0400]:    quit                     Closes the connection to the control server.
+Rooster::Runner [2010-10-24 08:19:17 -0400]:    exit                     Kills the scheduler.
+Rooster::Runner [2010-10-24 08:19:17 -0400]:  Command received: exit.
+Rooster::Runner [2010-10-24 08:19:17 -0400]:  Command completed: exit.
+Rooster::Runner [2010-10-24 08:19:17 -0400]:  Connection closed.
+Rooster::Runner [2010-10-24 08:19:17 -0400]:  Rooster::Runner terminated at 2010-10-24 08:19:17 -0400

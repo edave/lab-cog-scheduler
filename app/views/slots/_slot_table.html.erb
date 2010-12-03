@@ -1,0 +1,27 @@
+<%# 
+  Display slots for an experiment
+  render :partial => "slots/slot_table", 
+         :locals => {:slots => @slots_in_experiment}
+-%>
+<% num_filled = 0 
+   num_subjects = 0
+   for slot in slots
+	num_filled += 1 if slot.filled?
+    num_subjects += slot.subjects.count
+   end
+%>
+<%= slots.length %> slots<br />
+<%= num_subjects %> participants<br />
+<%= num_filled %> completely filled<br />
+<table id="slots">
+<thead>
+	
+</thead>
+<tbody>
+<% slots.each do |slot| %>
+  <%= render(:partial => "slots/show", :locals => {:slot => slot})%>
+<% end %>
+</tbody>
+</table>
+
+<br />

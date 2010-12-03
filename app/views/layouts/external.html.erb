@@ -1,0 +1,18 @@
+<%= render :partial => '/helpers/header' %>
+	<body>
+		<div class="header external">
+		<div id="banner" style="background: url('/<%= site_group_logo_path %>') left top no-repeat;width:100%" ><%= site_group_name %><br/>Experiment Signup</div>
+		</div>
+		<br clear="all" />
+		<div class="content">
+			<p class="notice"><%= notice %></p>
+       <p class="alert"><%= alert %></p>
+		  <%= yield %>
+		</div>
+		<div id="footer">
+			<a href="http://halab.mit.edu/" style="color:#bb2222;font-size:1.1em;">Experiment Tracker</a> | <a href="/">&copy; 2010 </a>
+            | <a href="javascript:none;"></a> | <%= link_to('Sign in', new_user_session_path)  %> 
+        </div>
+		</div>
+	</body>
+</html>

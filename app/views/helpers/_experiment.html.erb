@@ -1,0 +1,26 @@
+<%# 
+ For experiment models
+ experiment: experiment model object
+ show_signup_link bool, show the signup link
+ show_title: bool, show the tile
+#%>
+<% show_title = false if show_title == nil
+   show_signup_link = false if show_signup_link == nil
+%>
+<div class="experiment">
+	<% if show_title %>
+	<div class="title"><%= experiment.name %></div>
+	<% end %>
+	<div class="details" style="font-weight: bold"><%= mail_to(experiment.user.email, experiment.user.name, {:encode => 'javascript', :replace_at => ' at ', :replace_dot => ' dot '}) %></div>
+	<div class="details"><%= markdown(experiment.desc) %></div>
+	<div class="details"><b>Length:</b> approximately <%= experiment.human_time_length %></div>
+	<div class="details"><b>Compensation:</b> <% if experiment.compensation > 0 %>$<%= experiment.compensation%> for participating <% else %>none provided<% end %></div>
+	<div class="details"><b>Location:</b> This experiment is conducted on the MIT campus, you will receive instructions for the experiment location after signing up.</div>
+	<div class="details">If you have any questions, contact <%= mail_to(experiment.user.email, experiment.user.name, {:encode => 'javascript', :replace_at => ' at ', :replace_dot => ' dot '}) %></div>
+
+	<% if show_signup_link %>
+	<%= link_to(:controller => :subjects, :action => :new, :id => experiment.hashed_id) do %>
+	<div class="details signup">Sign up here</div>
+	<% end %>
+	<% end %>
+</div>

@@ -1,0 +1,9 @@
+<%# 
+ For showing experiments in a simple list
+ experiments: experiments model object
+#%>
+<ul class="experiment-list">
+<% experiments.each do |experiment| %>
+	<a href="<%= %>"><li><%= experiment.name %></li></a>
+<% end %>
+</ul>

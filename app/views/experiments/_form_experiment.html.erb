@@ -1,0 +1,40 @@
+<%= form_for(experiment) do |f| %>
+  <%= render "helpers/error_messages", :target => experiment %>  
+  <h3>Name</h3>
+	<%= f.text_field :name, :size => 40 %>
+ <h3>Compensation</h3>
+ $<%= f.text_field :compensation, :size => 3 %>
+ <h3>Max # of subjects</h3>
+ <%= f.text_field :num_subjects, :size => 2 %>
+ <h3>Max # of subjects per time slot</h3>
+ <%= f.text_field :num_subjects_per_slot, :size => 2 %>
+ <h3>Automaticaly close slots if they are starting within</h3>
+ <%= f.text_field :slot_close_time, :size => 2 %> minutes
+ <h3>Google Calendar</h3>
+ <select name="calendar_id">
+ 	<option value=""></option>
+ 	<% for calendar in @calendars do %>
+ 		<option value="<%= calendar.hashed_id %>" <% if experiment.google_calendar_id == calendar.id %>selected="selected"<% end %>><%= calendar.name %></option>
+	<% end %>
+</select>
+<h3>Location</h3>
+<select name="location_id">
+ 	<% for location in @locations do %>
+ 		<option value="<%= location.hashed_id %>" <% if @experiment.location_id == location.id %>selected="selected"<% end %>><%= location.human_location %></option>
+	<% end %>
+</select>
+ <h3>Time for each experiment slot (minutes)</h3>
+ <%= f.text_field :time_length, :size => 2 %>
+ <h3><label for="experiment_open">Open to public?</label> <%= f.check_box :open %></h3>
+	<h3>Description:</h3>
+	<%= f.text_area :desc, :size => 30, :class=>'markItUp' %>
+	
+  <p>
+    <%= f.submit 'Create' %>
+  </p>
+<% end %>
+<script type="text/javascript" >
+   jQuery(document).ready(function() {
+       jQuery(".markItUp").markItUp(myMarkdownSettings);
+   });
+</script>
