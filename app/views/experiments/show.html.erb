@@ -1,16 +1,17 @@
-<div class="column-left">
+<div class="column-left" style="width:50%">
 <div class="slots">
+	<h2>Slots</h2>
 	<%= render :partial => '/slots/form', :locals => {:experiment => @experiment} %>
 	<% unless @experiment.slots.empty? %>
 	<br />
-	<h3>Slots</h3>
 	<%= render :partial => '/slots/slot_table', :locals => {:slots => @experiment.slots, :experiment => @experiment} %>
 	<% else %>
 	<h3>No Slots</h3>
 	<% end %>
 </div>
 </div>
-<div class="column-right">
+<div class="column-right" style="width:45%">
+	<h2>Info</h2>
 <div class="detail"><span class="title">Compensation:</span> $<%= @experiment.compensation %></div>
 <div class="detail"><span class="title">Time per slot:</span> <%= @experiment.human_time_length %></div>
 <div class="detail"><span class="title">Max # of participants: </span><%= @experiment.num_subjects %></div>
@@ -26,13 +27,3 @@
 <div><%= link_to 'Preview signup page', :action=>:participate, :id => @experiment.hashed_id %></div><br />
 <div><%= link_to 'Preview confirmation page', :controller => :subjects, :action=>:dummy_confirmation, :id => @experiment.hashed_id %></div>
 </div>
-<script>
-$(document).ready(function(){
-  $('.ajax-form')
-    .bind("ajax:success", function(evt, data, status, xhr){
-      $('table#slots > tbody:last').prepend(xhr.responseText);
-	  
-	});
-$('#slot_date').datepicker();
-});
-</script>

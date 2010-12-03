@@ -35,11 +35,11 @@
 <% end %>
 </tbody>
 </table>
-<script type="text/javascript" charset="utf-8">
+<% content_for(:deferred_js) do %>
 	$(document).ready(function(){
 		$("input#expired-slots-toggle").bind('change',function(){
 			$("table#slots tbody.expired").slideToggle();
 		});
 		$("div#participants-pb").progressbar({value: <%= (num_subjects.to_f / experiment.num_subjects.to_f)*100 %> })
 	});
-</script>
+<% end %>
