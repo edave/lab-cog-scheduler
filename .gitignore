@@ -1,0 +1,12 @@
+log/*.log
+log/rooster_daemon.*
+bin-debug
+.settings
+.metadata
+.loadpath
+.DS_Store
+/.project
+vendor/gems/gems
+vendor/gems/specifications
+vendor/gems/doc
+vendor/gems/environment.rb

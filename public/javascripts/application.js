@@ -45,9 +45,20 @@ $(document).ready(function(){
 	  errorDiv.html(errorText);
 	  errorDiv.show(300);
     });
+
+	// Converts checkboxes into iPhone-style toggles
+	$('input.toggle:checkbox').each(function(){
+		var element = $(this);
+		element.iphoneStyle({ checkedLabel: element.attr('data-checked-label'), 
+							  uncheckedLabel: element.attr('data-unchecked-label') });
+	});
 });
 
-/* Collapseable Function */
+/* Collapseable Functionality
+   Finds any element that has a data-collapse-element-id attr
+   and adds click bindings so that element will show/hide (toggle)
+   the element with id=data-collapse-element-id
+ */
 $('[data-collapse-element-id]').live('click', function(e){
 	var element = $(this);
 	var collapseElementID = element.attr('data-collapse-element-id');

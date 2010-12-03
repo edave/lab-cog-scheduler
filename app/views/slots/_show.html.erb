@@ -4,7 +4,7 @@
          :locals => {:slot => @my_slot}
 -%>
 <tr class='slot <% if slot.expired? %>expired-slot<% end %>' data-slot="<%= slot.hashed_id %>" >
-	<td class='collapse-icon' ><% if slot.subjects.count > 0 %><div class="collapse-icon collapsed" data-collapse-element-id="slot-participants-<%= slot.hashed_id %>" > </div><% end %></td>
+	<td class='collapse-icon' ><% if slot.subjects.count > 0 %><div class="icon collapse-icon collapsed" data-collapse-element-id="slot-participants-<%= slot.hashed_id %>" > </div><% end %></td>
   	<td><% if slot.cancelled %><s><%= slot.human_date %></s><% else %><%= slot.human_date %><% end %></td>
 	<td><span class="title"><%= slot.human_time %></span></td>
 	<td class='<% if slot.empty? %>open<% end %>'>
@@ -14,13 +14,14 @@
 			empty
 		<% end %>
 	</td>
-    <td><% unless slot.expired? %>
-		<%= link_to 'Edit', edit_slot_path(slot) %>
-		<%= link_to 'Destroy', slot, :confirm => 'Are you sure?', :method => :delete %>
-		<% end %></td>
+    <td>
+		<span class="icon edit-icon <% if slot.expired? %>disabled<% end %>"> </span>
+		<span class="icon destroy-icon <% if slot.expired? %>disabled<% end %>"> </span>
+		<% else %></td>
 </tr>
 <tr id="slot-participants-<%= slot.hashed_id %>" style="display:none">
-<td colspan=6 >
+	<td></td>
+<td colspan=5 >
 	<div class="participants">
 	<% slot.subjects.each do |subject| %>
 		<div class="participant">

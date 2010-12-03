@@ -259,6 +259,22 @@ div.validation-error{
 	background-color: #FADFDD;
 	padding:4px;
 }
+
+/* Icons */
+div.icon, span.icon{
+	width:16px;
+	height:16px;
+	margin:2px;
+	cursor: pointer;
+}
+span.icon{
+	padding-left:16px;
+}
+div.disabled,span.disabled{
+	opacity:0.5;
+	cursor:default;
+}
+
 td.collapse-icon{
 	padding:0;
 }
@@ -271,6 +287,32 @@ div.collapse-icon.collapsed{
 }
 div.collapse-icon.uncollapsed{
 	background: transparent url(/images/icons/custom/detail-uncollapsed.png) no-repeat top left;
+}
+
+.date-icon{
+	background: transparent url(/images/icons/silk-companion/calendar_select_day.png) no-repeat top left;
+}
+.time-icon{
+	background: transparent url(/images/icons/famfamfam/time.png) no-repeat top left;
+}
+.edit-icon{
+	background: transparent url(/images/icons/famfamfam/pencil.png) no-repeat top left;
+}
+.destroy-icon{
+	background: transparent url(/images/icons/famfamfam/delete.png) no-repeat top left;
+}
+
+/* jQuery UI */
+div.progress-bar{
+	width: 95%;
+}
+div.progress-bar-details{
+	font-style:italic;
+	color:#444;
+	width:95%;
+	text-align:center;
+	margin-top:2px;
+	margin-bottom:16px;
 }
 
 /* Experiment */

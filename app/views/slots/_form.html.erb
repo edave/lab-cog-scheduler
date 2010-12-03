@@ -5,18 +5,19 @@
 					 :experiment => @my_experiment}
 -%>
 <% slot ||= Slot.new 
+   new_slot = slot.new_record?
    experiment ||= slot.experiment%>
-<%= form_for(slot, :html => { :class=>"ajax-form"}, :remote => true, :disable_with => "Adding...") do |f| %>
+<%= form_for(slot, :html => { :class=>"ajax-form"}, :remote => true, :disable_with => (new_slot ? "Adding..." : "Saving...")) do |f| %>
 	<input type="hidden" name="experiment_id" value="<%= experiment.hashed_id %>" />
 	<div class="validation-error" style="display:none"></div>
 	  <div>
-		<label for="slot_date">Date</label>
+		<label for="slot_date"><span class="icon date-icon"> </span></label>
 	   	<input type="text" class="datepicker" size="10" name="slot[date]" id="slot_date" value="<%=  slot.strfdate %>">
-		<label for="slot_time_hour">Time</label>
+		<label for="slot_time_hour"><span class="icon time-icon"> </span></label>
 		<%= select_tag("slot_time_hour", options_for_select(
 			[["1","1"],["2","2"],["3","3"],["4","4"],["5","5"],["6","6"],
 			 ["7","7"],["8","8"],["9","9"],["10","10"],["11","11"],["12","12"]]),
-			:name => "slot[time_hour]") %> :
+			:name => "slot[time_hour]", :html=>{:class=>"inline-icon time-icon"}) %> :
 		<%= select_tag("slot_time_min", options_for_select(
 				[["00","00"],["15","15"],["30","30"],["45","45"]]),
 				:name => "slot[time_min]") %>&nbsp;

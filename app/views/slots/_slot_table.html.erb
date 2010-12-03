@@ -1,27 +1,45 @@
 <%# 
   Display slots for an experiment
   render :partial => "slots/slot_table", 
-         :locals => {:slots => @slots_in_experiment}
+         :locals => {:slots => @slots_in_experiment, :experiment => @my_experiment}
 -%>
 <% num_filled = 0 
    num_subjects = 0
+	# The CS in me cries at how inefficient this is, esp since it's already date-sorted...
+   open_slots = slots.select{|slot| !slot.expired? }
+   expired_slots = slots.select{|slot| slot.expired? }
    for slot in slots
 	num_filled += 1 if slot.filled?
     num_subjects += slot.subjects.count
    end
 %>
-<%= slots.length %> slots<br />
-<%= num_subjects %> participants<br />
-<%= num_filled %> completely filled<br />
+<div id="participants-pb" class="progress-bar"></div>
+<div class="progress-bar-details" %><%= num_subjects %> participant<% if num_subjects > 1 %>s<% end %> signed up, <%= experiment.num_subjects - num_subjects %> still needed</div>
+<div>
+<div class="title" style="float:left; margin-right: 6px">Past</div><input type="checkbox" class="toggle" autocomplete="off" id="expired-slots-toggle" data-unchecked-label ="Hide" data-checked-label="Show" style="float:left"/>
+	</div>
+	<br style="clear:both" />
 <table id="slots">
+
 <thead>
 	
 </thead>
-<tbody>
-<% slots.each do |slot| %>
+<tbody class="expired" style="display:none">
+<% expired_slots.each do |slot| %>
+	  <%= render(:partial => "slots/show", :locals => {:slot => slot})%>
+	<% end %>
+</tbody>
+<tbody class="open">
+<% open_slots.each do |slot| %>
   <%= render(:partial => "slots/show", :locals => {:slot => slot})%>
 <% end %>
 </tbody>
 </table>
-
-<br />
+<script type="text/javascript" charset="utf-8">
+	$(document).ready(function(){
+		$("input#expired-slots-toggle").bind('change',function(){
+			$("table#slots tbody.expired").slideToggle();
+		});
+		$("div#participants-pb").progressbar({value: <%= (num_subjects.to_f / experiment.num_subjects.to_f)*100 %> })
+	});
+</script>
