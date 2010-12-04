@@ -16,10 +16,10 @@
 	</td>
     <td>
 		<span class="icon edit-icon <% if slot.expired? %>disabled<% end %>"> </span>
-		<span class="icon destroy-icon <% if slot.expired? %>disabled<% end %>"> </span>
+		<span class="icon destroy-icon <% if slot.expired? %>disabled<% end %>" data-destroy-url="<%= slot_path(slot) %>"> </span>
 		<% else %></td>
 </tr>
-<tr id="slot-participants-<%= slot.hashed_id %>" style="display:none">
+<tr id="slot-participants-<%= slot.hashed_id %>" data-slot="<%= slot.hashed_id %>" style="display:none">
 	<td></td>
 <td colspan=5 >
 	<div class="participants">

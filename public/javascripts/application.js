@@ -6,6 +6,12 @@ console.warn = console.warn || function(){};
 console.error = console.error || function(){};
 console.info = console.info || function(){};
 
+$.ajaxSetup({
+  beforeSend: function(xhr) {
+    xhr.setRequestHeader("Accept", "text/javascript");
+  }
+});
+
 $(document).ready(function(){
   $('.ajax-form')
     .bind("ajax:success", function(evt, data, status, xhr){
@@ -65,6 +71,15 @@ $('[data-collapse-element-id]').live('click', function(e){
 	$('#'+collapseElementID).slideToggle();
 	element.toggleClass("collapsed");
 	element.toggleClass("uncollapsed");
+});
+
+$('[data-destroy-url]').live('click', function(e){
+	var element = $(this);
+	$.destroy({
+	  url: element.attr('data-destroy-url'),
+	  success: function(data, status, xhr){
+		$('[data-'+data[0]+'="'+data[1]+'"]').remove();
+	}});
 });
 
 function passwordHelper(passwordElement, confirmElement, username){

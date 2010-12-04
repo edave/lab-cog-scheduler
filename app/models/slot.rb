@@ -1,5 +1,4 @@
 class Slot < ObfuscatedRecord
-  
   belongs_to :experiment
   has_many :appointments, :dependent => :destroy
   has_many :subjects, :through => :appointments

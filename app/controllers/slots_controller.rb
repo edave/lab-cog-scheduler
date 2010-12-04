@@ -167,7 +167,7 @@ class SlotsController < ApplicationController
   # DELETE /slots/1
   # DELETE /slots/1.xml
   def destroy
-    @slot = Slot.obfuscated(params[:id]).includes(:experiment)
+    @slot = Slot.obfuscated_query(params[:id]).includes(:experiment).first
     if @slot.nil?
       render_404
       return
@@ -176,15 +176,18 @@ class SlotsController < ApplicationController
     page_group(@experiment.user.group)
     
     if @experiment.nil? or !@experiment.can_modify?(current_user)
-      access_denied
-      return
-    end
-    if @experiment.can_modify?(current_user)
+      respond_to do |format|
+          format.js   {render :layout => false, :status => :unprocessable_entity }
+          format.html { access_denied }
+      end
+    else
+    if @experiment.can_modify?(current_user) #redundant
       @slot.destroy
     end
-    respond_to do |format|
-      format.html { redirect_to(@experiment) }
-      format.xml  { head :ok }
+     respond_to do |format|
+        format.html { redirect_to(@slot.experiment) }
+        format.js   { render :json => ['slot',params[:id]].to_json, :layout => false }
     end
+  end
   end
 end
