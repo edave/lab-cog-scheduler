@@ -60,7 +60,7 @@ class SlotsController < ApplicationController
   end
 
   def cancel
-    @slot = Slot.obfuscated(params[:id]).includes(:experiment)
+    @slot = Slot.obfuscated_query(params[:id]).includes(:experiment).first
     if @slot.nil?
       render_404
       return
@@ -69,20 +69,20 @@ class SlotsController < ApplicationController
     page_group(@experiment.user.group)
     
     if @experiment.nil? or !@experiment.can_modify?(current_user)
-      access_denied
-      return
+      respond_to do |format|
+          format.js   {render :layout => false, :status => :unprocessable_entity }
+          format.html { access_denied }
+      end
+    else
+    if @experiment.can_modify?(current_user) #redundant
+      @slot.cancel
+      #@slot.save!
     end
-    page_title([@experiment.name, "Slot Cancelled", @slot.human_time])
-    if @experiment.can_modify?(current_user)
-    @slot.cancelled = true
-    @slot.save!
-    
-    SlotNotifier.deliver_cancelled(@slot)
+     respond_to do |format|
+        format.html { redirect_to(@slot.experiment) }
+        format.js   { render :json => ['slot',params[:id]].to_json, :layout => false }
     end
-    respond_to do |format|
-      format.html
-      format.xml  { render :xml => @slot }
-    end
+  end
   end
 
   # GET /slots/1/edit
@@ -190,4 +190,5 @@ class SlotsController < ApplicationController
     end
   end
   end
+  
 end

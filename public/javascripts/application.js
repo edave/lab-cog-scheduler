@@ -6,6 +6,10 @@ console.warn = console.warn || function(){};
 console.error = console.error || function(){};
 console.info = console.info || function(){};
 
+var labcog = {
+	sch: { exists:true }
+} 
+
 $.ajaxSetup({
   beforeSend: function(xhr) {
     xhr.setRequestHeader("Accept", "text/javascript");
@@ -58,8 +62,6 @@ $(document).ready(function(){
 		element.iphoneStyle({ checkedLabel: element.attr('data-checked-label'), 
 							  uncheckedLabel: element.attr('data-unchecked-label') });
 	});
-	
-	$('div#destroy-dialog').dialog({modal:true, autoOpen: false, minWidth: 325});
 });
 
 /* Collapseable Functionality
@@ -77,7 +79,8 @@ $('[data-collapse-element-id]').live('click', function(e){
 
 $('[data-destroy-url]').live('click', function(e){
 	var element = $(this);
-	var dialog = $("div#destroy-dialog");
+	var mapping = eval(element.attr("data-labcog-mapping"));
+	var dialog = $("div#" + mapping.dialog);
 	dialog.dialog('option', 'title', element.attr("data-destroy-title"));
 	dialog.dialog("option", 
 		"buttons", [
@@ -89,12 +92,10 @@ $('[data-destroy-url]').live('click', function(e){
 	{ text: "Yes, do it!",
 	  click: function() {
 		dialog.dialog('close');
-		element.
 		$.destroy({
 	  		url: element.attr('data-destroy-url'),
-	  		success: function(data, status, xhr){
-				$('[data-'+data[0]+'="'+data[1]+'"]').remove();
-				}});
+	  		success: mapping.success
+		});
 	}}
 	]);
 	dialog.dialog('open');

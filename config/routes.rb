@@ -15,10 +15,9 @@ ExperimentTracker::Application.routes.draw do
   resources :groups
   resources :subjects
   resources :slots do
-  
     member do
-      get :cancel
-  end
+      delete :cancel
+    end
   
   end
 

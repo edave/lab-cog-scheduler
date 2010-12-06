@@ -279,6 +279,7 @@ div.icon, span.icon{
 }
 span.icon{
 	padding-left:16px;
+	padding-top:2px;
 }
 div.disabled,span.disabled{
 	opacity:0.5;
@@ -310,6 +311,9 @@ div.collapse-icon.uncollapsed{
 }
 .destroy-icon{
 	background: transparent url(/images/icons/famfamfam/delete.png) no-repeat top left;
+}
+.cancel-icon{
+	background: transparent url(/images/icons/led/cancel.png) no-repeat top left;
 }
 
 /* jQuery UI */

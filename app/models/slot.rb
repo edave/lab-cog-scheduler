@@ -37,6 +37,10 @@ class Slot < ObfuscatedRecord
     return self.appointments.empty?
   end
   
+  def cancel
+    self.cancelled = true
+  end
+  
   def limit_appointments
     return false if self.experiment == nil
     unless self.appointments.count <= self.experiment.num_subjects_per_slot

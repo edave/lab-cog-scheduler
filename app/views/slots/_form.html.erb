@@ -28,10 +28,10 @@
 	  <p><%= f.submit %></p>
 <% end %>
 <% content_for(:deferred_js) do %>
-  $('.ajax-form')
-    .bind("ajax:success", function(evt, data, status, xhr){
-      $('table#slots > tbody.open:last').append(xhr.responseText);
-	  $('tbody.open > tr:last').prev().effect('highlight', {}, 3000);
-	});
+$('.ajax-form')
+	.bind("ajax:success", function(evt, data, status, xhr){
+	$('table#slots > tbody.open:last').append(xhr.responseText);
+	$('tbody.open > tr:last').prev().effect('highlight', {}, 3000);
+});
 $('#slot_date').datepicker({minDate: 0, showOtherMonths:true, dateFormat: 'mm/dd/y'});
 <% end %>
