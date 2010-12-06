@@ -3,9 +3,9 @@
   render :partial => "slots/show", 
          :locals => {:slot => @my_slot}
 -%>
-<tr class='slot <% if slot.expired? %>expired-slot<% end %>' data-slot="<%= slot.hashed_id %>" >
+<tr class='slot <% if slot.expired? %>expired-slot<% end %> <% if slot.cancelled %>canceled-slot<%end%>' data-slot="<%= slot.hashed_id %>" >
 	<td class='collapse-icon' ><% if slot.subjects.count > 0 %><div class="icon collapse-icon collapsed" data-collapse-element-id="slot-participants-<%= slot.hashed_id %>" > </div><% end %></td>
-  	<td><% if slot.cancelled %><s><%= slot.human_date %></s><% else %><%= slot.human_date %><% end %></td>
+  	<td><%= slot.human_date %></td>
 	<td><span class="title"><%= slot.human_time %></span></td>
 	<td class='<% if slot.empty? %>open<% end %>'>
 		<% unless slot.empty? %>
@@ -14,7 +14,7 @@
 			empty
 		<% end %>
 	</td>
-    <td>
+	<td>
 		<span class="icon edit-icon <% if slot.expired? %>disabled<% end %>"> </span>
 		<% if slot.empty? %>
 		<span class="icon destroy-icon <% if slot.expired? %>disabled<% end %>" data-destroy-url="<%= slot_path(slot) %>" data-destroy-title="Delete <%= slot.human_date %>, <%= slot.human_time %>?" data-labcog-mapping="labcog.sch.slotDestroyFn"> </span>

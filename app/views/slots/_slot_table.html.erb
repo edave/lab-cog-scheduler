@@ -51,7 +51,11 @@ labcog.sch.slotDestroyError = function(){
 	console.error("Error destroying slot");
 }
 labcog.sch.slotCancelSuccess = function(data,status,xhr){
-	console.log("Success at Cancel");
+	var element = $('tr.slot[data-'+data[0]+'="'+data[1]+'"]');
+	var cancelIcon = element.find('span.cancel-icon');
+	cancelIcon.replaceWith('<span class="icon canceled-icon"> </span>')
+	element.addClass('canceled-slot');
+	element.effect('highlight', {}, 3000);
 }
 labcog.sch.slotCancelError = function(){
 	console.error("Error Cancel");

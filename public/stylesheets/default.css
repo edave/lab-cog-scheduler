@@ -315,6 +315,9 @@ div.collapse-icon.uncollapsed{
 .cancel-icon{
 	background: transparent url(/images/icons/led/cancel.png) no-repeat top left;
 }
+.canceled-icon{
+	background: transparent url(/images/icons/diagona/16/150.png) no-repeat top left;	
+}
 
 /* jQuery UI */
 div.progress-bar{
@@ -406,6 +409,10 @@ span.closed{
 tr.expired-slot{
 	-webkit-gradient(linear, 0% 0%, 0% 100%, from(#666666), to(#666666), color-stop(.8,#44444));
 	-moz-linear-gradient(0% 59% 270deg,#666666, #666666, #444444 100%);
+}
+
+tr.canceled-slot td{
+	text-decoration:line-through;
 }
 
 .clear  {
