@@ -16,7 +16,7 @@
 	</td>
     <td>
 		<span class="icon edit-icon <% if slot.expired? %>disabled<% end %>"> </span>
-		<span class="icon destroy-icon <% if slot.expired? %>disabled<% end %>" data-destroy-url="<%= slot_path(slot) %>"> </span>
+		<span class="icon destroy-icon <% if slot.expired? %>disabled<% end %>" data-destroy-url="<%= slot_path(slot) %>" data-destroy-title="Delete <%= slot.human_date %>, <%= slot.human_time %>?"> </span>
 		<% else %></td>
 </tr>
 <tr id="slot-participants-<%= slot.hashed_id %>" data-slot="<%= slot.hashed_id %>" style="display:none">

@@ -1,18 +1,42 @@
 <%= render :partial => '/helpers/header' %>
-	<body>
-		<div class="header external">
-		<div id="banner" style="background: url('/<%= site_group_logo_path %>') left top no-repeat;width:100%" ><%= site_group_name %><br/>Experiment Signup</div>
-		</div>
-		<br clear="all" />
-		<div class="content">
-			<p class="notice"><%= notice %></p>
-       <p class="alert"><%= alert %></p>
-		  <%= yield %>
-		</div>
-		<div id="footer">
-			<a href="http://halab.mit.edu/" style="color:#bb2222;font-size:1.1em;">Experiment Tracker</a> | <a href="/">&copy; 2010 </a>
-            | <a href="javascript:none;"></a> | <%= link_to('Sign in', new_user_session_path)  %> 
-        </div>
-		</div>
-	</body>
+<body>
+<div id="header-wrapper">
+<div class="application" id="header">
+	<div id="banner" style="background: url('/images/logo.png') left top no-repeat;">Lab Cog!</div>
+	<div class="messages">
+		<% if notice %><div class="notice"><%= notice %></div><% end %>
+	 	<% if alert %><div class="alert"><%= alert %></div><% end %>
+	</div>
+	<div class="tabs">
+		<div id="current_user"><%= current_user.user_name if current_user %></div>	
+		<ul>
+			<a href="/help"><li>Help</li></a>
+			<li><%= link_to('Sign out', destroy_user_session_path)  %></li>
+		</ul>
+	</div>
+	</div>
+</div>
+<div id="top-tray">
+	<div class="page-title" ><%= sanitize(page_title) %></div>
+</div>
+<br style="clear:both"/>
+<div id="content-wrapper">
+<div id="content" class="external">
+  <%= yield %>
+</div>
+<br style="clear:both" />
+</div>
+<div id="footer-wrapper">
+<div id="footer">
+	<a href="/">Lab Cog Co. &copy; 2010 </a>
+    | <a href="javascript:none;"></a>
+</div>
+</div>
+</div>
+</body>
+<script type="text/javascript" charset="utf-8">
+$(document).ready(function(){
+<%= yield(:deferred_js) %>
+});
+</script>
 </html>

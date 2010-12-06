@@ -58,6 +58,8 @@ $(document).ready(function(){
 		element.iphoneStyle({ checkedLabel: element.attr('data-checked-label'), 
 							  uncheckedLabel: element.attr('data-unchecked-label') });
 	});
+	
+	$('div#destroy-dialog').dialog({modal:true, autoOpen: false, minWidth: 325});
 });
 
 /* Collapseable Functionality
@@ -75,11 +77,27 @@ $('[data-collapse-element-id]').live('click', function(e){
 
 $('[data-destroy-url]').live('click', function(e){
 	var element = $(this);
-	$.destroy({
-	  url: element.attr('data-destroy-url'),
-	  success: function(data, status, xhr){
-		$('[data-'+data[0]+'="'+data[1]+'"]').remove();
-	}});
+	var dialog = $("div#destroy-dialog");
+	dialog.dialog('option', 'title', element.attr("data-destroy-title"));
+	dialog.dialog("option", 
+		"buttons", [
+		{ text: "No",
+		  click: function(){
+			dialog.dialog('close');
+		}
+		},
+	{ text: "Yes, do it!",
+	  click: function() {
+		dialog.dialog('close');
+		element.
+		$.destroy({
+	  		url: element.attr('data-destroy-url'),
+	  		success: function(data, status, xhr){
+				$('[data-'+data[0]+'="'+data[1]+'"]').remove();
+				}});
+	}}
+	]);
+	dialog.dialog('open');
 });
 
 function passwordHelper(passwordElement, confirmElement, username){
