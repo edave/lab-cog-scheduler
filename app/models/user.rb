@@ -3,7 +3,7 @@ class User < ObfuscatedRecord
   # :token_authenticatable, :confirmable, :lockable and :timeoutable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable,
-         :confirmable, :timeoutable
+         :confirmable
 
   # Add ACL9's support for roles/authorization
   acts_as_authorization_subject  :association_name => :roles
