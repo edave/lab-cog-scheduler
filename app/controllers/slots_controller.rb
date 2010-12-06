@@ -75,7 +75,7 @@ class SlotsController < ApplicationController
       end
     else
     if @experiment.can_modify?(current_user) #redundant
-     # @slot.cancel()
+      @slot.cancel()
       @slot.save!
     end
      respond_to do |format|

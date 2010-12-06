@@ -37,6 +37,10 @@ class Slot < ObfuscatedRecord
     return self.appointments.empty?
   end
   
+  def cancelled?
+    return self.cancelled
+  end
+  
   def cancel
     self.cancelled = true
   end

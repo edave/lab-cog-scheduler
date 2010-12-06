@@ -53,8 +53,8 @@ labcog.sch.slotDestroyError = function(){
 labcog.sch.slotCancelSuccess = function(data,status,xhr){
 	var element = $('tr.slot[data-'+data[0]+'="'+data[1]+'"]');
 	var cancelIcon = element.find('span.cancel-icon');
-	cancelIcon.replaceWith('<span class="icon canceled-icon"> </span>')
-	element.addClass('canceled-slot');
+	cancelIcon.replaceWith('<span class="cancelled-icon icon"> </span>')
+	element.addClass('cancelled-slot');
 	element.effect('highlight', {}, 3000);
 }
 labcog.sch.slotCancelError = function(){
