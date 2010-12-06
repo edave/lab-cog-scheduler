@@ -38,17 +38,5 @@
 </div>
 <br style="clear:both" />
 </div>
-<div id="footer-wrapper">
-<div id="footer">
-	<a href="/">Lab Cog Co. &copy; 2010 </a>
-    | <a href="javascript:none;"></a>
-</div>
-</div>
-</div>
-</body>
-<script type="text/javascript" charset="utf-8">
-$(document).ready(function(){
-<%= yield(:deferred_js) %>
-});
-</script>
+<%= render(:partial => 'helpers/footer') %>
 </html>

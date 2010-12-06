@@ -227,10 +227,9 @@ div#content.external{
 	clear:both;
 }
 #footer {
-	padding:10px 10px 8px 10px;
+	padding:10px 10px 8px 35px;
 	color:#4D5761;
 	text-shadow: 1px 1px 1px rgba(128, 128, 128, 0.5)
-	
 	font-size:1.1em;
 }
 

@@ -1,0 +1,16 @@
+<div id="footer-wrapper">
+<div id="footer">
+	<a href="<%= (production_env?) ? 'javascript:none;' : 'https://github.com/edave/lab-cog-scheduler/commit/' + FULL_SOURCE_REVISION_NUMBER %>"><%= (production_env?) ? SOURCE_REVISION_NUMBER : SOURCE_REVISION_DETAILS %></a>
+	| <a>Contact</a>
+	| <a>Privacy</a>
+	| <a>Terms of Service</a>
+	| &copy; 2010 Lab Cog Co. All rights reserved.
+</div>
+</div>
+</div>
+</body>
+<script type="text/javascript" charset="utf-8">
+$(document).ready(function(){
+<%= yield(:deferred_js) %>
+});
+</script>
