@@ -35,13 +35,20 @@ class Experiment < ObfuscatedRecord
       end
       return occupied
   end
-
-  def filled?
+  
+  
+  # Total number of subjects signed up
+  # not including cancelled slots
+  def subjects_count
     subject_count = 0
     self.slots.each do |slot|
-      subject_count += slot.subjects_count
+      subject_count += slot.subjects.count unless slot.cancelled?
     end
-    return subject_count >= self.num_subjects
+    return subject_count
+  end
+
+  def filled?
+    return num_subjects >= self.num_subjects
   end
   
    def owned_by?(user)

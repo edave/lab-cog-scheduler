@@ -3,18 +3,13 @@
   render :partial => "slots/slot_table", 
          :locals => {:slots => @slots_in_experiment, :experiment => @my_experiment}
 -%>
-<% num_filled = 0 
-   num_subjects = 0
+<% subjects_count = experiment.subjects_count
 	# The CS in me cries at how inefficient this is, esp since it's already date-sorted...
    open_slots = slots.select{|slot| !slot.expired? }
    expired_slots = slots.select{|slot| slot.expired? }
-   for slot in slots
-	num_filled += 1 if slot.filled?
-    num_subjects += slot.subjects.count
-   end
 %>
 <div id="participants-pb" class="progress-bar"></div>
-<div class="progress-bar-details" %><%= num_subjects %> participant<% if num_subjects > 1 %>s<% end %> signed up, <%= experiment.num_subjects - num_subjects %> still needed</div>
+<div class="progress-bar-details" %><%= subjects_count %> participant<% if subjects_count > 1 %>s<% end %> signed up, <%= experiment.num_subjects - subjects_count %> still needed</div>
 <div>
 <div class="title" style="float:left; margin-right: 6px">Past</div><input type="checkbox" class="toggle" autocomplete="off" id="expired-slots-toggle" data-unchecked-label ="Hide" data-checked-label="Show" style="float:left"/>
 	</div>
@@ -39,7 +34,7 @@
 $("input#expired-slots-toggle").bind('change',function(){
 	$("table#slots tbody.expired").slideToggle();
 });
-$("div#participants-pb").progressbar({value: <%= (num_subjects.to_f / experiment.num_subjects.to_f)*100 %> });
+$("div#participants-pb").progressbar({value: <%= (subjects_count.to_f / experiment.num_subjects.to_f)*100 %> });
 $('div#destroy-dialog').dialog({modal:true, autoOpen: false, minWidth: 325});
 $('div#cancel-dialog').dialog({modal:true, autoOpen: false, minWidth: 325});
 <% end  %>
