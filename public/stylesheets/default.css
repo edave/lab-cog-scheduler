@@ -35,8 +35,14 @@ ol li{
 	list-style-type:decimal;
 }
 
+a{
+	color:#444;
+	text-decoration:none;
+}
+
 a:hover {
-color:#222;
+color:#7B6F5F;
+text-decoration:underline;
 }
 
 div.column-left{
@@ -45,7 +51,6 @@ div.column-left{
 div.column-right{
 	float:right;
 }
-
 
 div#header, div#content-wrapper, div#footer,div#top-tray {
 	width:960px;
@@ -325,14 +330,6 @@ div.cancelled-icon, span.cancelled-icon{
 div.progress-bar{
 	width: 95%;
 }
-div.progress-bar-details{
-	font-style:italic;
-	color:#444;
-	width:95%;
-	text-align:center;
-	margin-top:2px;
-	margin-bottom:16px;
-}
 
 /* Experiment */
 
@@ -384,6 +381,28 @@ div.form{
 }
 
 /* Slots */
+div.slots div.progress-bar{
+	margin-top:6px;
+}
+div.progress-bar-details{
+	font-style:italic;
+	color:#444;
+	width:95%;
+	text-align:center;
+	margin-top:2px;
+	margin-bottom:12px;
+}
+
+table#slots tbody tr:nth-child(4n+1){
+	background-color:#F2F0E5;
+}
+table#slots tbody tr td:first-child{
+	padding-left:6px;
+}
+table#slots tbody tr td.last-child{
+	padding-right:6px;
+}
+
 div.date-selector{
 	margin-top:4px;
 }
@@ -406,6 +425,17 @@ td.open{
 }
 span.closed{
 	color: #1C1C1C;
+}
+
+div.participants span.name{
+	font-weight:bolder;
+	font-size:1.1em;
+	color:#333;
+}
+
+div.participants div.details{
+	margin:0px 4px 6px 12px;
+	color:#444;
 }
 
 tr.expired-slot{

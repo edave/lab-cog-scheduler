@@ -4,7 +4,7 @@
          :locals => {:slot => @my_slot}
 -%>
 <tr class='slot <% if slot.expired? %>expired-slot<% end %> <% if slot.cancelled %>cancelled-slot<%end%>' data-slot="<%= slot.hashed_id %>" >
-	<td class='collapse-icon' ><% if slot.subjects.count > 0 %><div class="icon collapse-icon collapsed" data-collapse-element-id="slot-participants-<%= slot.hashed_id %>" > </div><% end %></td>
+	<td class='collapse-icon' ><% if slot.subjects.count > 0 %><div class="icon collapse-icon collapsed" data-collapse-element-id="slot-participants-<%= slot.hashed_id %>" title="Show Details" data-alt-title="Hide Details"> </div><% end %></td>
   	<td><%= slot.human_date %></td>
 	<td><span class="title"><%= slot.human_time %></span></td>
 	<td class='<% if slot.empty? %>open<% end %>'>
@@ -14,13 +14,13 @@
 			empty
 		<% end %>
 	</td>
-	<td>
+	<td class="last-child">
 		<% if slot.empty? %>
-		<span class="icon destroy-icon <% if slot.expired? %>disabled<% end %>" data-destroy-url="<%= slot_path(slot) %>" data-destroy-title="Delete <%= slot.human_date %>, <%= slot.human_time %>?" data-labcog-mapping="labcog.sch.slotDestroyFn"> </span>
+		<span class="icon destroy-icon <% if slot.expired? %>disabled<% end %>" data-destroy-url="<%= slot_path(slot) %>" data-destroy-title="Delete <%= slot.human_date %>, <%= slot.human_time %>?" data-labcog-mapping="labcog.sch.slotDestroyFn" title="Delete"> </span>
 		<% elsif slot.cancelled? %>
-		<span class="icon cancelled-icon"> </span>
+		<span class="icon cancelled-icon" title="Cancelled"> </span>
 		<% else %>
-		<span class="icon cancel-icon <% if slot.expired? %>disabled<% end %>" data-destroy-url="<%= cancel_slot_path(slot) %>" data-destroy-title="Cancel <%= slot.human_date %>, <%= slot.human_time %>?" data-labcog-mapping="labcog.sch.slotCancelFn"> </span>
+		<span class="icon cancel-icon <% if slot.expired? %>disabled<% end %>" data-destroy-url="<%= cancel_slot_path(slot) %>" data-destroy-title="Cancel <%= slot.human_date %>, <%= slot.human_time %>?" data-labcog-mapping="labcog.sch.slotCancelFn" title="Cancel"> </span>
 		<% end %>
 		</td>
 </tr>
@@ -30,9 +30,11 @@
 	<div class="participants">
 	<% slot.subjects.each do |subject| %>
 		<div class="participant">
-		<%= subject.name %>
-		<%= subject.email %>
+		<span class="name"><%= subject.name %></span>
+		<div class="details">
+		<%= mail_to(subject.email, nil, {:encode => :javascript}) %><br />
 		<%= number_to_phone(subject.phone_number) %>
+		</div>
 		</div>
 	<% end %>
 	</div>

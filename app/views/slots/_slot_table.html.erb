@@ -8,8 +8,6 @@
    open_slots = slots.select{|slot| !slot.expired? }
    expired_slots = slots.select{|slot| slot.expired? }
 %>
-<div id="participants-pb" class="progress-bar"></div>
-<div class="progress-bar-details" %><%= subjects_count %> participant<% if subjects_count > 1 %>s<% end %> signed up, <%= experiment.num_subjects - subjects_count %> still needed</div>
 <div>
 <div class="title" style="float:left; margin-right: 6px">Past</div><input type="checkbox" class="toggle" autocomplete="off" id="expired-slots-toggle" data-unchecked-label ="Hide" data-checked-label="Show" style="float:left"/>
 	</div>

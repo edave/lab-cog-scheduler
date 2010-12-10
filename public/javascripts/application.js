@@ -75,6 +75,12 @@ $('[data-collapse-element-id]').live('click', function(e){
 	$('#'+collapseElementID).slideToggle();
 	element.toggleClass("collapsed");
 	element.toggleClass("uncollapsed");
+	var altTitle = element.attr('data-alt-title');
+	if(altTitle != null && altTitle != ''){
+	var oldTitle = element.attr('title');
+		element.attr('title', altTitle);
+		element.attr('data-alt-title', oldTitle);
+	}
 });
 
 $('[data-destroy-url]').live('click', function(e){
