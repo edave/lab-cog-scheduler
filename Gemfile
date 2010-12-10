@@ -23,7 +23,8 @@ gem 'css_parser', '>=1.0.0'
 gem 'mail_style', '>= 0.1.6'
 
 # For google calendar
-gem 'gcal4ruby'
+gem "oauth-plugin", ">=0.4.0.pre1"
+gem 'edave-gcal4ruby'
 
 # For Rooster
 gem 'daemons', '1.1.0'
