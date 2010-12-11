@@ -5,6 +5,10 @@ class User < ObfuscatedRecord
          :recoverable, :rememberable, :trackable, :validatable,
          :confirmable
 
+  has_many :consumer_tokens
+  has_one  :google, :class_name=>"GoogleToken", :dependent=>:destroy
+
+
   # Add ACL9's support for roles/authorization
   acts_as_authorization_subject  :association_name => :roles
 

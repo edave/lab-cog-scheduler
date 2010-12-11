@@ -1,16 +1,39 @@
 require 'oauth/controllers/consumer_controller'
 class OauthConsumersController < ApplicationController
   include Oauth::Controllers::ConsumerController
-  # Replace this with the equivalent for your authentication framework
-  # Eg. for devise
-  #
-  #   before_filter :authenticate_user!, :only=>:index
-  before_filter :login_required, :only=>:index
+  
+  before_filter :authenticate_user!, :only=>:index
   
   def index
     @consumer_tokens=ConsumerToken.all :conditions=>{:user_id=>current_user.id}
     @services=OAUTH_CREDENTIALS.keys-@consumer_tokens.collect{|c| c.class.service_name}
   end
+  
+  
+  # HACK - 12/10/10 - DPitman
+  # For some reason, OAuth plugin's controller method doesn't get recognized...
+  def callback
+          logger.info "CALLBACK"
+          @request_token_secret=session[params[:oauth_token]]
+          if @request_token_secret
+            @token=@consumer.find_or_create_from_request_token(current_user,params[:oauth_token],@request_token_secret,params[:oauth_verifier])
+            session[params[:oauth_token]] = nil
+            if @token
+              # Log user in
+              if logged_in?
+                flash[:notice] = "#{params[:id].humanize} was successfully connected to your account"
+              else
+                self.current_user = @token.user 
+                flash[:notice] = "You logged in with #{params[:id].humanize}"
+              end
+              go_back
+            else
+              flash[:error] = "An error happened, please try connecting again"
+              redirect_to oauth_consumer_url(params[:id])
+            end
+          end
+
+        end
   
   protected
   
@@ -24,9 +47,9 @@ class OauthConsumersController < ApplicationController
   # The plugin requires logged_in? to return true or false if the user is logged in. Uncomment and
   # call your auth frameworks equivalent below if different. eg. for devise:
   #
-  # def logged_in?
-  #   user_signed_in?
-  # end
+  def logged_in?
+     user_signed_in?
+  end
     
   # The plugin requires current_user to return the current logged in user. Uncomment and
   # call your auth frameworks equivalent below if different.
@@ -37,14 +60,16 @@ class OauthConsumersController < ApplicationController
   # The plugin requires a way to log a user in. Call your auth frameworks equivalent below 
   # if different. eg. for devise:
   #
-  # def current_user=(user)
-  #   sign_in(user)
-  # end
+  def current_user=(user)
+     sign_in(user)
+  end
   
   # Override this to deny the user or redirect to a login screen depending on your framework and app
   # if different. eg. for devise:
   #
-  # def deny_access!
-  #   raise Acl9::AccessDenied
-  # end
+  def deny_access!
+     raise Acl9::AccessDenied
+  end
+
+  
 end

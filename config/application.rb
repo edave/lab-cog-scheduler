@@ -46,6 +46,12 @@ module ExperimentTracker
       config.filter_parameters += [:password, :user_name, :name, :phone, :email,
                                    :encrypted_password, :password_salt, :password_confirmation]
     end
+    
+    config.generators do |g|
+      g.orm             :active_record
+      g.template_engine :erb
+      g.test_framework  :rspec
+    end
   
   # ActiveRecord config
   config.colorize_logging = true

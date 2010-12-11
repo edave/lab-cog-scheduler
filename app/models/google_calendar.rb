@@ -3,13 +3,8 @@ class GoogleCalendar < ObfuscatedRecord
   
   has_many :experiments
   
-  attr_accessible :login, :password, :name
-  
-  attr_encrypted :login, :key => ENCRYPTED_ATTR_PASSKEY
-  attr_encrypted :password, :key => ENCRYPTED_ATTR_PASSKEY
+  attr_accessible :name
    
-  validates_presence_of :login
-  validates_presence_of :password
   validates_presence_of :name
   
   validate :confirm_login

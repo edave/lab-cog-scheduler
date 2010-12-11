@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101013194945) do
+ActiveRecord::Schema.define(:version => 20101210223040) do
 
   create_table "appointments", :force => true do |t|
     t.integer  "subject_id"
@@ -22,6 +22,17 @@ ActiveRecord::Schema.define(:version => 20101013194945) do
 
   add_index "appointments", ["slot_id"], :name => "index_appointments_on_slot_id"
   add_index "appointments", ["subject_id"], :name => "index_appointments_on_subject_id"
+
+  create_table "consumer_tokens", :force => true do |t|
+    t.integer  "user_id"
+    t.string   "type",       :limit => 30
+    t.string   "token",      :limit => 1024
+    t.string   "secret"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "consumer_tokens", ["token"], :name => "index_consumer_tokens_on_token", :length => {"token"=>"255"}
 
   create_table "experiments", :force => true do |t|
     t.string   "name",                  :limit => 256
@@ -46,12 +57,10 @@ ActiveRecord::Schema.define(:version => 20101013194945) do
   add_index "experiments", ["user_id"], :name => "index_experiments_on_user_id"
 
   create_table "google_calendars", :force => true do |t|
-    t.string   "encrypted_login"
-    t.string   "encrypted_password"
     t.string   "calendar_id"
     t.string   "name"
-    t.integer  "hashed_id",          :default => 0
-    t.integer  "lock_version",       :default => 0
+    t.integer  "hashed_id",    :default => 0
+    t.integer  "lock_version", :default => 0
     t.datetime "created_at"
     t.datetime "updated_at"
   end

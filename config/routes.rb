@@ -12,6 +12,12 @@ ExperimentTracker::Application.routes.draw do
     get "/logout" => "devise/sessions#destroy"
   end
   
+  resources :oauth_consumers do
+      member do
+        get :callback
+      end
+  end
+  
   resources :groups
   resources :subjects
   resources :slots do
