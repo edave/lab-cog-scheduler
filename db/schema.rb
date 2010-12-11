@@ -63,9 +63,11 @@ ActiveRecord::Schema.define(:version => 20101210223040) do
     t.integer  "lock_version", :default => 0
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "user_id"
   end
 
   add_index "google_calendars", ["hashed_id"], :name => "index_google_calendars_on_hashed_id"
+  add_index "google_calendars", ["user_id"], :name => "index_google_calendars_on_user_id"
 
   create_table "groups", :force => true do |t|
     t.integer  "owner_id",        :default => 0

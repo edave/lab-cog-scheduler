@@ -25,8 +25,7 @@ class GoogleCalendarsController < ApplicationController
   # GET /google_calendars/new
   # GET /google_calendars/new.xml
   def new
-    @google_calendar = GoogleCalendar.new
-
+    @calendars = GoogleCalendar.calendars(current_user.google_token.client)
     respond_to do |format|
       format.html # new.html.erb
       format.xml  { render :xml => @google_calendar }
@@ -42,6 +41,7 @@ class GoogleCalendarsController < ApplicationController
   # POST /google_calendars.xml
   def create
     @google_calendar = GoogleCalendar.new(params[:google_calendar])
+    @google_calendar.user = current_user
 
     respond_to do |format|
       if @google_calendar.save

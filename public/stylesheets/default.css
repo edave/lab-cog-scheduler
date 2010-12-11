@@ -81,7 +81,7 @@ div#header #banner{
 	height: 36px;
 	font-size: 2.2em;
 	font-weight: bold;
-	color: #DDE7F9;
+	color: #EEF8FA;
 	float:left;
 	text-shadow: rgba(0,0,0,0.8) 1px 1px 1px;
 }
@@ -112,7 +112,7 @@ div.tabs ul a{
 
 div#current_user{
 	float:left;
-	color: #DDE7F9;
+	color: #EEF8FA;
 	text-shadow: rgba(0,0,0,0.7) 1px 1px 1px;
 	font-size:1.2em;
 	margin-right: 8px;

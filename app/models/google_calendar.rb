@@ -3,24 +3,25 @@ class GoogleCalendar < ObfuscatedRecord
   
   has_many :experiments
   
+  belongs_to :user
+  
+  has_one :google_token, :through => :user
+  
   attr_accessible :name
    
   validates_presence_of :name
   
-  validate :confirm_login
   validate :confirm_calendar
   
-  before_save :find_calendar_id
-  
-  def self.calendars(login, password)
-    service = self.get_service()
+  def self.calendars(accesstoken)
+    service = self.get_service(accesstoken)
     unless service == nil
-      return GCal4Ruby::Calendar.find(service, :all)
+      return service.calendars
     end
   end
   
   def find_calendar_id
-    service = self.get_service()
+    service = get_service()
     if service
     new_calendar = GCal4Ruby::Calendar.find(service, name, {'max-results' => '10'})
     if new_calendar == nil or new_calendar.empty?
@@ -43,29 +44,21 @@ class GoogleCalendar < ObfuscatedRecord
     return html
   end
   
-  def confirm_login
-    if self.get_service == nil
-      errors.add(:login, " or password is not correct")
-      return false
-    end
-    return true
-  end
-  
   def confirm_calendar
-    service = self.get_service()
+    service = get_service()
     if service != nil and !name.blank?
       new_calendar = GCal4Ruby::Calendar.find(service, name, {:scope => :first})
       unless new_calendar == nil || new_calendar.empty?
         return true
       end
     end
-    errors.add(:name, " could not find a calendar with this name")
+    errors.add(:name, " could not find the calendarg")
       
     return false
   end
   
   def calendar
-    service = self.get_service()
+    service = get_service()
     begin
     if service != nil
       my_calendar = GCal4Ruby::Calendar.find(service, {:id=>self.calendar_id})
@@ -84,9 +77,10 @@ class GoogleCalendar < ObfuscatedRecord
     event = GCal4Ruby::Event.new(get_service, {:calendar => self.calendar})
     event.title = experiment.name + ' - ' + subject.name
     event.content = "An experiment for " + experiment.name \
-                  + " was automatically scheduled for this time by the Experiment Signup Tool\n"  \
+                  + " was automatically scheduled for this time by the Lab Cog Scheduler\n"  \
                   + "Subject: " + subject.name \
-                  + "\n\nExperiment Contact " + experiment.user.name + ", " + experiment.user.email
+                  + "\n\nExperiment Contact " + experiment.user.name + ", " + experiment.user.email \
+                  + "Lab Cog - Escape the Experiment Grind - http://www.labcog.com"
     event.where = experiment.location.human_location
     event.start_time = start_time
     event.end_time = endtime
@@ -94,18 +88,12 @@ class GoogleCalendar < ObfuscatedRecord
   end 
   
   def get_service()
-    return GoogleCalendar.get_service(self.login, self.password)
+    GoogleCalendar.get_service(self.google_token.client)
   end
   
-  def self.get_service(login, password)
-    begin
-      service = GCal4Ruby::Service.new
-      authenticated = service.authenticate(login, password) 
-      return service 
-    rescue 
-      
-    end
-    
-    return nil
+  def self.get_service(accesstoken)
+    service = GCal4Ruby::Service.new({:use_ssl => true, :check_public => false, :debug => false}, :OAuthService)
+    service.authenticate({:access_token=>accesstoken}) 
+    return service
   end
 end

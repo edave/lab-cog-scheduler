@@ -12,3 +12,25 @@ OAUTH_CREDENTIALS={
  }
 
 load 'oauth/models/consumers/service_loader.rb'
+
+# Hack - Remove when gem is upgraded... sigh...
+module Oauth
+  module Models
+    module Consumers
+      module Token
+        
+       
+        module InstanceMethods
+          
+          # Main client for interfacing with remote service. Override this to use
+          # preexisting library eg. Twitter gem.
+          def client
+            @client||=OAuth::AccessToken.new self.class.consumer,token,secret
+          end
+
+         
+        end
+      end
+    end
+  end
+end
