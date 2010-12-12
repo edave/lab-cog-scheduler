@@ -5,10 +5,9 @@
 	<div class="progress-bar-details" %><%= subjects_count %> participant<% if subjects_count > 1 %>s<% end %> signed up, <%= @experiment.num_subjects - subjects_count %> still needed</div>
 	<h2>Slots</h2>
 	<%= render :partial => '/slots/form', :locals => {:experiment => @experiment} %>
-	<% unless @experiment.slots.empty? %>
 	<br />
 	<%= render :partial => '/slots/slot_table', :locals => {:slots => @experiment.slots, :experiment => @experiment} %>
-	<% else %>
+	<% unless @experiment.slots.empty? %>
 	<h3>No Slots</h3>
 	<% end %>
 </div>
@@ -30,3 +29,9 @@
 <div><%= link_to 'Preview signup page', :action=>:participate, :id => @experiment.hashed_id %></div><br />
 <div><%= link_to 'Preview confirmation page', :controller => :subjects, :action=>:dummy_confirmation, :id => @experiment.hashed_id %></div>
 </div>
+<% content_for(:deferred_js) do %>
+<% subjects_percent = (subjects_count.to_f / @experiment.num_subjects.to_f)*100
+   subjects_percent = 2.0 if subjects_percent < 2.0
+ %>
+$("div#participants-pb").progressbar({value: <%= subjects_percent %> });
+<% end  %>

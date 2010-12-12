@@ -32,7 +32,6 @@
 $("input#expired-slots-toggle").bind('change',function(){
 	$("table#slots tbody.expired").slideToggle();
 });
-$("div#participants-pb").progressbar({value: <%= (subjects_count.to_f / experiment.num_subjects.to_f)*100 %> });
 $('div#destroy-dialog').dialog({modal:true, autoOpen: false, minWidth: 325});
 $('div#cancel-dialog').dialog({modal:true, autoOpen: false, minWidth: 325});
 <% end  %>
