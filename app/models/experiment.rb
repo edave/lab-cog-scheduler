@@ -48,7 +48,7 @@ class Experiment < ObfuscatedRecord
   end
 
   def filled?
-    return num_subjects >= self.num_subjects
+    return subjects_count >= self.num_subjects
   end
   
    def owned_by?(user)
