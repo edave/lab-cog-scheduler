@@ -124,7 +124,7 @@ class SlotsController < ApplicationController
     
     if @slot.save
     respond_with(@slot, :status => :created, :location => @slot) do |format|
-        flash[:notice] = 'Slot was successfully created.'
+        flash.now[:notice] = 'Slot was successfully created.'
         format.html { redirect_to(@slot.experiment) }
         format.js   { render :partial => "slots/show", :locals => {:slot => @slot}, :layout => false, :status => :created }
     end

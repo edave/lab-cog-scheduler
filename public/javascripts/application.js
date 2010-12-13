@@ -107,6 +107,46 @@ $('[data-destroy-url]').live('click', function(e){
 	dialog.dialog('open');
 });
 
+labcog.sch.slotDestroySuccess = function(data, status, xhr){
+	$('[data-'+data[0]+'="'+data[1]+'"]').remove();
+	labcog.sch.updateSlotsFlavorText();
+}
+labcog.sch.slotDestroyError = function(){
+	console.error("Error destroying slot");
+}
+labcog.sch.slotCancelSuccess = function(data,status,xhr){
+	var element = $('tr.slot[data-'+data[0]+'="'+data[1]+'"]');
+	var cancelIcon = element.find('span.cancel-icon');
+	cancelIcon.replaceWith('<span class="cancelled-icon icon"> </span>')
+	element.addClass('cancelled-slot');
+	element.effect('highlight', {}, 3000);
+}
+labcog.sch.slotCancelError = function(){
+	console.error("Error Cancel");
+}
+
+labcog.sch.slotDestroyFn = {
+	success:labcog.sch.slotDestroySuccess,
+	error:labcog.sch.slotDestroyError,
+	dialog:"destroy-dialog"
+}
+
+labcog.sch.slotCancelFn = {
+	success:labcog.sch.slotCancelSuccess,
+	error:labcog.sch.slotCancelError,
+	dialog:"cancel-dialog"
+}
+labcog.sch.updateSlotsFlavorText = function(){
+	if($('table#slots > tbody.open tr').length < 1){
+		$('#no-open-slots').show();
+	}else if($('table#slots > tbody tr').length < 1){
+		$('#no-slots-tag').show();
+	}else{
+		$('#no-open-slots').hide();
+		$('#no-slots-tag').hide();
+	}
+}
+
 function passwordHelper(passwordElement, confirmElement, username){
 	var validationElements = new Array();
 	validationElements["confirm"] = jQuery("div#pwd-valid-confirm");

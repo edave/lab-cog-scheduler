@@ -4,6 +4,6 @@
 #%>
 <ul class="experiment-list">
 <% experiments.each do |experiment| %>
-	<a href="<%= %>"><li><%= experiment.name %></li></a>
+	<a href="<%= experiment_path(experiment) %>"><li><%= experiment.name %></li></a>
 <% end %>
 </ul>

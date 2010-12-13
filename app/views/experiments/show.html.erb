@@ -2,14 +2,11 @@
 <div class="slots">
 	<% subjects_count = @experiment.subjects_count	%>
 	<div id="participants-pb" class="progress-bar"></div>
-	<div class="progress-bar-details" %><%= subjects_count %> participant<% if subjects_count > 1 %>s<% end %> signed up, <%= @experiment.num_subjects - subjects_count %> still needed</div>
+	<div class="progress-bar-details" %><%= subjects_count %> participant<% if subjects_count == 1 %>s<% end %> signed up, <%= @experiment.num_subjects - subjects_count %> still needed</div>
 	<h2>Slots</h2>
 	<%= render :partial => '/slots/form', :locals => {:experiment => @experiment} %>
 	<br />
 	<%= render :partial => '/slots/slot_table', :locals => {:slots => @experiment.slots, :experiment => @experiment} %>
-	<% unless @experiment.slots.empty? %>
-	<h3>No Slots</h3>
-	<% end %>
 </div>
 </div>
 <div class="column-right" style="width:45%">

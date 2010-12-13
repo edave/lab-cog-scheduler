@@ -9,7 +9,7 @@
    expired_slots = slots.select{|slot| slot.expired? }
 %>
 <div>
-<div class="title" style="float:left; margin-right: 6px">Past</div><input type="checkbox" class="toggle" autocomplete="off" id="expired-slots-toggle" data-unchecked-label ="Hide" data-checked-label="Show" style="float:left"/>
+<div class="title" style="float:left; margin-right: 6px">Past</div><input type="checkbox" class="toggle" autocomplete="off" id="expired-slots-toggle" data-unchecked-label ="Hide" data-checked-label="Show" style="float:left" <% if expired_slots.empty? %>disabled='true'<% end %>/>
 	</div>
 	<br style="clear:both" />
 <table id="slots">
@@ -28,6 +28,8 @@
 <% end %>
 </tbody>
 </table>
+<h3 id="no-slots-tag" style="text-align:center; <% unless slots.empty? %>display:none;<% end %>" >No Slots</h3>
+<h3 id="no-open-slots" style="text-align:center; <% unless open_slots.empty? and not slots.empty? %>display:none;<% end %>">No Future Slots</h3>
 <% content_for(:deferred_js) do %>
 $("input#expired-slots-toggle").bind('change',function(){
 	$("table#slots tbody.expired").slideToggle();
@@ -35,37 +37,6 @@ $("input#expired-slots-toggle").bind('change',function(){
 $('div#destroy-dialog').dialog({modal:true, autoOpen: false, minWidth: 325});
 $('div#cancel-dialog').dialog({modal:true, autoOpen: false, minWidth: 325});
 <% end  %>
-<% content_for(:deferred_nonlive_js) do %>
-labcog.sch.slotDestroySuccess = function(data, status, xhr){
-	$('[data-'+data[0]+'="'+data[1]+'"]').remove();
-}
-labcog.sch.slotDestroyError = function(){
-	console.error("Error destroying slot");
-}
-labcog.sch.slotCancelSuccess = function(data,status,xhr){
-	var element = $('tr.slot[data-'+data[0]+'="'+data[1]+'"]');
-	var cancelIcon = element.find('span.cancel-icon');
-	cancelIcon.replaceWith('<span class="cancelled-icon icon"> </span>')
-	element.addClass('cancelled-slot');
-	element.effect('highlight', {}, 3000);
-}
-labcog.sch.slotCancelError = function(){
-	console.error("Error Cancel");
-}
-
-labcog.sch.slotDestroyFn = {
-	success:labcog.sch.slotDestroySuccess,
-	error:labcog.sch.slotDestroyError,
-	dialog:"destroy-dialog"
-}
-
-labcog.sch.slotCancelFn = {
-	success:labcog.sch.slotCancelSuccess,
-	error:labcog.sch.slotCancelError,
-	dialog:"cancel-dialog"
-}
-
-<% end %>
 <div class="dialog" id="destroy-dialog" title="Delete?">
 <p>Do you want to delete this time slot? If you do so, it will not be available to participants who try to sign up for your experiment.</p>
 </div>
