@@ -2,7 +2,7 @@
 <body>
 <div id="header-wrapper">
 <div class="application" id="header">
-	<a href="/"><div id="banner" style="background: url('/images/logo.png') left top no-repeat;">Lab Cog!</div></a>
+	<a href="/"><div id="banner" class="tk-header">Lab Cog!</div></a>
 	<div class="messages">
 		<% if notice %><div class="notice"><%= notice %></div><% end %>
 	 	<% if alert %><div class="alert"><%= alert %></div><% end %>
@@ -26,15 +26,21 @@
 	</div>
 </div>
 <div id="top-tray">
-	<a id="dashboard" href="/experiments"><div class="title">Dashboard</div></a>
-	<div class="page-title" ><%= sanitize(page_title) %></div>
+	<a id="dashboard" href="/experiments"><div class="tk-header">Dashboard</div></a>
+	<div class="page-title tk-header" ><%= sanitize(page_title) %></div>
 </div>
 <br style="clear:both"/>
 <div id="content-wrapper">
-	<div id="sidebar" class="column-left">
+	<div id="sidebar" class="column-left tk-header">
 	<div class="upcoming box">
 		<div class="title">Upcoming</div>
-	
+		<ul class="slots-list">
+		<% Slot.limit(3).each do |slot|%>
+		<li><%= slot.human_day_of_week %> - <%= slot.human_time %><br />
+			<span class="experiment"><%= slot.experiment.name %>
+		</li>
+		<% end %>
+		</ul>
 	</div>
 	<div class="experiments box">
 		<div class="title">Experiments</div>

@@ -13,7 +13,9 @@
 		<% else %>
         	<%= javascript_include_tag 'jquery-1.4.4.min', 'jquery-ui-1.8.6.custom.min' %>
         <% end %>
-        <%= javascript_include_tag 'tdreyno-iphone/iphone-style-checkboxes.js','date-en-US', 'jquery.highlight-3', 'jquery.maskedinput-1.2.2.min', 'jquery.rest', :defaults %>
+		<script type="text/javascript" src="http://use.typekit.com/bal7wir.js"></script>
+		<script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+        <%= javascript_include_tag 'tdreyno-iphone/iphone-style-checkboxes.js','date-en-US', 'jquery.highlight-3', 'jquery.maskedinput-1.2.2.min', 'jquery.rest', 'jquery.inputHintOverlay.js', :defaults %>
         <%= stylesheet_link_tag 'yui-css-reset-font.css' %>
 		<%= stylesheet_link_tag 'default' %>
 		<%= stylesheet_link_tag 'jquery-ui/jquery-ui-1.8.6.custom.css',  '/javascripts/tdreyno-iphone/style.css', 'jquery-overrides.css' %>

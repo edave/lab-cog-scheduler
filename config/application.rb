@@ -61,11 +61,11 @@ module ExperimentTracker
 
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
-    :address  => "mail.hci4.me",
+    :address  => "mail.labcog.com",
     :port  => 587, 
-    :domain  => "hci4.me",
-    :user_name  => "noreply@hci4.me",
-    :password  => "5VQ891zTUI6C",
+    :domain  => "labcog.com",
+    :user_name  => "no-reply@labcog.com",
+    :password  => "y9x6rbyrn3IjoAMD",
     :authentication  => :login
       } 
   end

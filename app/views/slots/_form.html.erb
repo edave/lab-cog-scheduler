@@ -12,7 +12,7 @@
 	<div class="validation-error" style="display:none"></div>
 	  <div>
 		<label for="slot_date"><span class="icon date-icon"> </span></label>
-	   	<input type="text" class="datepicker" size="10" name="slot[date]" id="slot_date" value="<%=  slot.strfdate %>">
+	   	<input type="text" class="datepicker" size="10" name="slot[date]" id="slot_date" value="<%=  slot.strfdate %>" title="mm/dd/yy" >
 		<label for="slot_time_hour"><span class="icon time-icon"> </span></label>
 		<%= select_tag("slot_time_hour", options_for_select(
 			[["1","1"],["2","2"],["3","3"],["4","4"],["5","5"],["6","6"],
@@ -34,5 +34,6 @@ $('.ajax-form')
 	$('tbody.open > tr:last').prev().effect('highlight', {}, 3000);
 	labcog.sch.updateSlotsFlavorText();
 });
-$('#slot_date').datepicker({minDate: 0, showOtherMonths:true, dateFormat: 'mm/dd/y'});
+$('input#slot_date').datepicker({minDate: 0, showOtherMonths:true, dateFormat: 'mm/dd/y'});
+$('form.ajax-form').inputHintOverlay(0,0,true);
 <% end %>

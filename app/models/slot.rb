@@ -90,6 +90,11 @@ class Slot < ObfuscatedRecord
     return time.strftime("%b %e (%a)")
   end
   
+  def human_day_of_week
+    return "---" if time.nil? 
+    return time.strftime("%a")
+  end
+  
   def human_time
     return "---" if time.nil? 
     return time.strftime("%I:%M %p")
