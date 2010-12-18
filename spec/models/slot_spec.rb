@@ -1,5 +1,8 @@
 require 'spec_helper'
 
 describe Slot do
-  pending "add some examples to (or delete) #{__FILE__}"
+  it "should not have a time when new" do
+    Slot.new.time.should be nil
+    
+  end
 end

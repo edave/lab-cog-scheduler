@@ -157,6 +157,7 @@ GEM
     tzinfo (0.3.23)
     warden (0.10.7)
       rack (>= 1.0.0)
+    watchr (0.7)
 
 PLATFORMS
   ruby
@@ -187,3 +188,4 @@ DEPENDENCIES
   rdiscount
   rspec-rails (>= 2.3.1)
   rufus-scheduler
+  watchr

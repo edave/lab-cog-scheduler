@@ -52,15 +52,9 @@ group :development, :test do
 
   # Add in missing generators
   gem "rails3-generators"
-
-  # Continuous Tester
-  #gem "ZenTest"
-
-  # Add-ons for AutoTest
-  #gem "autotest-growl" # OS X Growl Integration
-  #gem "autotest-fsevent" # Use OS X's File System API
-  #gem "redgreen" # Color Output
-  
+ 
+  # Add Watchr
+  gem "watchr"
 
   # Testing Framework
   gem "rspec-rails", ">= 2.3.1"

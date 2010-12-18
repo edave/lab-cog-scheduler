@@ -9,10 +9,12 @@ class Subject < ObfuscatedRecord
   
   before_validation :clean_phone_number
   
-  validates_presence_of :name
-  validates_length_of :phone_number, :minimum => 10, :allow_blank => true, :allow_nil => true
+  validates :name, :presence => true,
+                   :length => {:minimum => 1, :maximum => 254}
   
-  validates_email :email, :unique => true, :encrypted => true
+  validates :email, :presence => true, :email => true
+  
+  validates_length_of :phone_number, :minimum => 10, :allow_blank => true, :allow_nil => true
   
   def clean_phone_number
     unless self.phone_number.nil?

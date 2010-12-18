@@ -68,6 +68,7 @@ class Slot < ObfuscatedRecord
    return ""
   end
   
+  
   def hour
      self.time.strftime("%I")
   end
