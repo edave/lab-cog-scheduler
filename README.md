@@ -18,6 +18,11 @@ Install AutoTest and add-ons
 	gem "autotest-growl"
 	gem "autotest-fsevent"
 	gem "redgreen"
+	
+Install RSpec and Factory Girl
+
+	gem install rspec-rails
+	gem install factory_girl_rails
 
 ### Javascript
 

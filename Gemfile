@@ -50,17 +50,20 @@ group :development, :test do
   # Server
   gem 'mongrel'
 
+  # Add in missing generators
+  gem "rails3-generators"
+
   # Continuous Tester
-  gem "ZenTest"
+  #gem "ZenTest"
 
   # Add-ons for AutoTest
-  gem "autotest-growl" # OS X Growl Integration
-  gem "autotest-fsevent" # Use OS X's File System API
-  gem "redgreen" # Color Output
+  #gem "autotest-growl" # OS X Growl Integration
+  #gem "autotest-fsevent" # Use OS X's File System API
+  #gem "redgreen" # Color Output
   
 
   # Testing Framework
-  gem "rspec-rails", "~> 2.3.1"
+  gem "rspec-rails", ">= 2.3.1"
   gem 'factory_girl_rails'
 
 end
