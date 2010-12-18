@@ -1,0 +1,16 @@
+# AutoTest configuration file
+# See http://ph7spot.com/musings/getting-started-with-autotest#ruby_on_rails_project
+
+require 'autotest/growl' # Growl Notifications
+require 'autotest/fsevent' # Use OS X's built-in file system notification api
+require 'autotest/restart'
+require 'redgreen/autotest'
+
+# Ignore VCS
+Autotest.add_hook :initialize do |autotest|
+  %w{.git .svn .hg .DS_Store ._* vendor tmp log doc}.each do |exception|
+    autotest.add_exception(exception)
+  end
+end
+
+# Autotest::Growl::clear_terminal = false

@@ -1,10 +1,8 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.0.0'
+gem 'rails', '3.0.3'
 
 # Bundle edge Rails instead:
-# gem 'rails', :git => 'git://github.com/rails/rails.git'
-
 gem 'mysql'
 
 # Deploy with Capistrano
@@ -13,9 +11,6 @@ gem 'capistrano'
 # Add gems for authentication/authorization
 gem "devise", '1.1.3'
 gem "acl9"
-
-# Date selecter UI
-gem 'calendar_date_select', :git => 'http://github.com/paneq/calendar_date_select.git', :branch => 'rails3test'
 
 # For mail_style (css in emails)
 gem 'nokogiri', '>=1.4.1'
@@ -52,7 +47,22 @@ gem 'hoptoad_notifier', '>=2.2.0'
 # put test-only gems in this group so their generators
 # and rake tasks are available in development mode:
 group :development, :test do
+  # Server
   gem 'mongrel'
+
+  # Continuous Tester
+  gem "ZenTest"
+
+  # Add-ons for AutoTest
+  gem "autotest-growl" # OS X Growl Integration
+  gem "autotest-fsevent" # Use OS X's File System API
+  gem "redgreen" # Color Output
+  
+
+  # Testing Framework
+  gem "rspec-rails", "~> 2.3.1"
+  gem 'factory_girl_rails'
+
 end
 
 

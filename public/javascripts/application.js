@@ -1,14 +1,16 @@
 // For debugging purposes
 // If the console doesn't exist (Safari, IE, etc), just create empty methods
-if (!window.console) console = {};
-console.log = console.log || function(){};
-console.warn = console.warn || function(){};
-console.error = console.error || function(){};
-console.info = console.info || function(){};
+if (!window.console){
+	console = {};
+	console.log = function(){};
+	console.warn = function(){};
+	console.error = function(){};
+	console.info = function(){};
+}
 
 var labcog = {
 	sch: { exists:true }
-} 
+};
 
 $.ajaxSetup({
   beforeSend: function(xhr) {
@@ -25,7 +27,7 @@ $(document).ready(function(){
       // Reset fields and any validation errors, so form can be used again, but leave hidden_field values intact.
       $form.find('textarea,input[type="text"],input[type="file"]').val("");
       $form.find('div.validation-error').empty();
- 	})
+	})
     .bind("ajax:failure", function(evt, xhr, status, error){
       var $form = $(this),
           errors,
@@ -37,7 +39,7 @@ $(document).ready(function(){
         errors = $.parseJSON(xhr.responseText);
       } catch(err) {
         // If the responseText is not valid JSON (like if a 500 exception was thrown), populate errors with a generic error message.
-        console.error("Server Error for Form: %s", $(this).attr('id'))
+        console.error("Server Error for Form: %s", $(this).attr('id'));
 		errors = {"Server Error": "Please reload the page and try again"};
       }
 
@@ -76,7 +78,7 @@ $('[data-collapse-element-id]').live('click', function(e){
 	element.toggleClass("collapsed");
 	element.toggleClass("uncollapsed");
 	var altTitle = element.attr('data-alt-title');
-	if(altTitle != null && altTitle != ''){
+	if(altTitle !== null && altTitle !== ''){
 	var oldTitle = element.attr('title');
 		element.attr('title', altTitle);
 		element.attr('data-alt-title', oldTitle);
@@ -99,8 +101,8 @@ $('[data-destroy-url]').live('click', function(e){
 	  click: function() {
 		dialog.dialog('close');
 		$.destroy({
-	  		url: element.attr('data-destroy-url'),
-	  		success: mapping.success
+			url: element.attr('data-destroy-url'),
+			success: mapping.success
 		});
 	}}
 	]);
@@ -110,32 +112,32 @@ $('[data-destroy-url]').live('click', function(e){
 labcog.sch.slotDestroySuccess = function(data, status, xhr){
 	$('[data-'+data[0]+'="'+data[1]+'"]').remove();
 	labcog.sch.updateSlotsFlavorText();
-}
+};
 labcog.sch.slotDestroyError = function(){
 	console.error("Error destroying slot");
-}
+};
 labcog.sch.slotCancelSuccess = function(data,status,xhr){
 	var element = $('tr.slot[data-'+data[0]+'="'+data[1]+'"]');
 	var cancelIcon = element.find('span.cancel-icon');
 	cancelIcon.replaceWith('<span class="cancelled-icon icon"> </span>')
 	element.addClass('cancelled-slot');
 	element.effect('highlight', {}, 3000);
-}
+};
 labcog.sch.slotCancelError = function(){
 	console.error("Error Cancel");
-}
+};
 
 labcog.sch.slotDestroyFn = {
 	success:labcog.sch.slotDestroySuccess,
 	error:labcog.sch.slotDestroyError,
 	dialog:"destroy-dialog"
-}
+};
 
 labcog.sch.slotCancelFn = {
 	success:labcog.sch.slotCancelSuccess,
 	error:labcog.sch.slotCancelError,
 	dialog:"cancel-dialog"
-}
+};
 labcog.sch.updateSlotsFlavorText = function(){
 	if($('table#slots > tbody.open tr').length < 1){
 		$('#no-open-slots').show();
@@ -145,7 +147,7 @@ labcog.sch.updateSlotsFlavorText = function(){
 		$('#no-open-slots').hide();
 		$('#no-slots-tag').hide();
 	}
-}
+};
 
 function passwordHelper(passwordElement, confirmElement, username){
 	var validationElements = new Array();
