@@ -59,4 +59,8 @@ describe Subject do
     Subject.new(:name => "Ginny Weasley").should have(:no).errors_on(:name)
   end
   
+  it "fails validation with no appointment (using error_on)" do
+  
+  end
+  
 end

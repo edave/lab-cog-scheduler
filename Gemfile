@@ -60,6 +60,9 @@ group :development, :test do
   gem "rspec-rails", ">= 2.3.1"
   gem 'factory_girl_rails'
 
+  # Code Metrics
+  gem "metric_fu"
+
 end
 
 

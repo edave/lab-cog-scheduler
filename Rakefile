@@ -3,5 +3,12 @@
 
 require File.expand_path('../config/application', __FILE__)
 require 'rake'
+require 'metric_fu'
+
+# Required for Rails 3 by MetricFu
+MetricFu::Configuration.run do |config|
+        config.rcov[:test_files] = ['spec/**/*_spec.rb']  
+        config.rcov[:rcov_opts] << "-Ispec" # Needed to find spec_helper
+      end
 
 ExperimentTracker::Application.load_tasks

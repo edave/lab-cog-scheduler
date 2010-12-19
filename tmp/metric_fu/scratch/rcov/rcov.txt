@@ -1,0 +1,2142 @@
+*******............*
+
+Pending:
+  Appointment add some examples to (or delete) ./spec/models/appointment_spec.rb
+    # Not Yet Implemented
+    # ./spec/models/appointment_spec.rb:4
+  ConsumerToken add some examples to (or delete) ./spec/models/consumer_token_spec.rb
+    # Not Yet Implemented
+    # ./spec/models/consumer_token_spec.rb:4
+  Experiment add some examples to (or delete) ./spec/models/experiment_spec.rb
+    # Not Yet Implemented
+    # ./spec/models/experiment_spec.rb:4
+  GoogleCalendar add some examples to (or delete) ./spec/models/google_calendar_spec.rb
+    # Not Yet Implemented
+    # ./spec/models/google_calendar_spec.rb:4
+  Group add some examples to (or delete) ./spec/models/group_spec.rb
+    # Not Yet Implemented
+    # ./spec/models/group_spec.rb:4
+  Location add some examples to (or delete) ./spec/models/location_spec.rb
+    # Not Yet Implemented
+    # ./spec/models/location_spec.rb:4
+  Role add some examples to (or delete) ./spec/models/role_spec.rb
+    # Not Yet Implemented
+    # ./spec/models/role_spec.rb:4
+  User add some examples to (or delete) ./spec/models/user_spec.rb
+    # Not Yet Implemented
+    # ./spec/models/user_spec.rb:4
+
+Finished in 0.31495 seconds
+20 examples, 0 failures, 8 pending
+================================================================================
+app/controllers/slots_controller.rb
+================================================================================
+   class SlotsController < ApplicationController
+     
+      respond_to :html, :json, :js
+     # GET /slots
+     # GET /slots.xml
+     def index
+!!     @experiment = Experiment.obfuscated(params[:experiment])
+!!     page_group(@experiment.user.group)
+!!     
+!!     if @experiment.nil? or !@experiment.can_modify?(current_user)
+!!       access_denied
+!!       return
+!!     end
+!!     @slots = Slot.where(:experiment_id => @experiment.id).order("time")
+!!     page_title([@experiment.name, "Time Slots"])
+!!     respond_to do |format|
+!!       format.html # index.html.erb
+!!       format.xml  { render :xml => @slots }
+!!     end
+!!   end
+   
+     # GET /slots/1
+     # GET /slots/1.xml
+     def show    
+!!     @slot = Slot.obfuscated_query(params[:id]).includes(:experiment).first
+!!     if @slot == nil
+!!       render_404
+!!       return
+!!     end
+!!     @experiment = @slot.experiment
+!!     page_group(@experiment.user.group)
+!!     
+!!     if @experiment.nil? or !@experiment.can_modify?(current_user)
+!!       access_denied
+!!       return
+!!     end
+!!     if @experiment.can_modify?(current_user)
+!!     page_title([@experiment.name, "Slot", @slot.human_time])
+!!     respond_to do |format|
+!!       format.html # show.html.erb
+!!       format.xml  { render :xml => @slot }
+!!     end
+!!     else
+!!       
+!!     end
+!!   end
+   
+     # GET /slots/new
+     # GET /slots/new.xml
+     def new
+!!     page_title("New Time Slot")
+!!     @slot = Slot.new
+!!     @experiment = Experiment.obfuscated_query(params[:id]).includes(:slots).first
+!!     page_group(@experiment.user.group)
+!!     
+!!     respond_to do |format|
+!!       format.html # new.html.erb
+!!       format.xml  { render :xml => @slot }
+!!     end
+!!   end
+   
+     def cancel
+!!     @slot = Slot.obfuscated_query(params[:id]).includes(:experiment).first
+!!     if @slot.nil?
+!!       render_404
+!!       return
+!!     end
+!!     @experiment = @slot.experiment
+!!     page_group(@experiment.user.group)
+!!     
+!!     if @experiment.nil? or !@experiment.can_modify?(current_user)
+!!       respond_to do |format|
+!!           format.js   {render :layout => false, :status => :unprocessable_entity }
+!!           format.html { access_denied }
+!!       end
+!!     else
+!!     if @experiment.can_modify?(current_user) #redundant
+!!       @slot.cancel()
+!!       @slot.save!
+!!     end
+!!      respond_to do |format|
+!!         format.html { redirect_to(@slot.experiment) }
+!!         format.js   { render :json => ['slot',params[:id]].to_json, :layout => false }
+!!     end
+!!   end
+!!   end
+   
+     # GET /slots/1/edit
+     def edit
+!!     @slot = Slot.obfuscated(params[:id]).includes(:experiment)
+!!     if @slot.nil?
+!!       render_404
+!!       return
+!!     end
+!!     @experiment = @slot.experiment
+!!     page_group(@experiment.user.group)
+!!     
+!!     if @experiment.nil? or !@experiment.can_modify?(current_user)
+!!       access_denied
+!!       return
+!!     end
+!!     if @experiment.owned_by?(current_user)
+!!     page_title([@experiment.name, "Edit Slot", @slot.human_time])
+!!     else
+!!     redirect_to(:controller => :slots, :action => :index, :experiment=> @experiment.hashed_id)
+!!     end
+!!   end
+   
+     # POST /slots
+     # POST /slots.xml
+     def create
+!!     @slot = Slot.new()
+!!     experiment = Experiment.obfuscated(params[:experiment_id])
+!!     page_group(experiment.user.group)
+!!     
+!!     if experiment.nil? or !experiment.can_modify?(current_user)
+!!       access_denied
+!!       return
+!!     end
+!!     @slot.experiment = experiment
+!!     
+!!     @slot.parse_datetime([params[:slot][:date], params[:slot][:time_hour] + ":" + params[:slot][:time_min],
+!!                               params[:slot][:time_12h], experiment.time_zone].join(" "))
+!!     
+!!     if @slot.save
+!!     respond_with(@slot, :status => :created, :location => @slot) do |format|
+!!         flash.now[:notice] = 'Slot was successfully created.'
+!!         format.html { redirect_to(@slot.experiment) }
+!!         format.js   { render :partial => "slots/show", :locals => {:slot => @slot}, :layout => false, :status => :created }
+!!     end
+!!     else
+!!        respond_with(@slot.errors, :status => :unprocessable_entity) do |format|
+!!           format.js   {render :json => @slot.errors, :layout => false, :status => :unprocessable_entity }
+!!           format.html { render :action => "new" }
+!!         end
+!!     end
+!!   end
+   
+     # PUT /slots/1
+     # PUT /slots/1.xml
+     def update
+!!     @slot = Slot.obfuscated(params[:id]).includes(:experiment)
+!!     if @slot.nil?
+!!       render_404
+!!       return
+!!     end
+!!     @experiment = @slot.experiment
+!!     page_group(@experiment.user.group)
+!!     
+!!     if @experiment.nil? or !@experiment.can_modify?(current_user)
+!!       access_denied
+!!       return
+!!     end
+!!     respond_to do |format|
+!!       if @experiment.can_modify?(current_user) and @slot.update_attributes(params[:slot])
+!!         flash[:notice] = 'Slot was successfully updated.'
+!!         format.html { redirect_to(@slot) }
+!!         format.xml  { head :ok }
+!!       else
+!!         
+!!         format.html { render :action => "edit" }
+!!         format.xml  { render :xml => @slot.errors, :status => :unprocessable_entity }
+!!       end
+!!     end
+!!   end
+   
+     # DELETE /slots/1
+     # DELETE /slots/1.xml
+     def destroy
+!!     @slot = Slot.obfuscated_query(params[:id]).includes(:experiment).first
+!!     if @slot.nil?
+!!       render_404
+!!       return
+!!     end
+!!     @experiment = @slot.experiment
+!!     page_group(@experiment.user.group)
+!!     
+!!     if @experiment.nil? or !@experiment.can_modify?(current_user)
+!!       respond_to do |format|
+!!           format.js   {render :layout => false, :status => :unprocessable_entity }
+!!           format.html { access_denied }
+!!       end
+!!     else
+!!     if @experiment.can_modify?(current_user) #redundant
+!!       @slot.destroy
+!!     end
+!!      respond_to do |format|
+!!         format.html { redirect_to(@slot.experiment) }
+!!         format.js   { render :json => ['slot',params[:id]].to_json, :layout => false }
+!!     end
+!!   end
+!!   end
+!!   
+!! end
+================================================================================
+app/controllers/subjects_controller.rb
+================================================================================
+   class SubjectsController < ApplicationController
+     layout 'external'
+     
+     #caches_action :new
+     cache_sweeper :experiment_sweeper, :only => [ :new ]
+   
+     # GET /subjects
+     # GET /subjects.xml
+     def index
+!!     @subjects = Subject.all
+!!     page_title("Subjects")
+!!     
+!!     respond_to do |format|
+!!       format.html { render :layout => 'application' }
+!!     end
+!!   end
+   
+     # GET /subjects/1
+     # GET /subjects/1.xml
+     def show
+!!     @subject = Subject.find_by_hashed_id(params[:id])
+!!     page_title(["Subject", @subject.name])
+!!     respond_to do |format|
+!!       format.html { render :layout => 'application' }
+!!     end
+!!   end
+   
+     # GET /subjects/new
+     # GET /subjects/new.xml
+     def new
+!!     @experiment = Experiment.find_by_hashed_id(params[:id], :include => :slots)
+!!     page_group(@experiment.user.group)
+!!     
+!!     unless @experiment.open? or @experiment.can_modify?(current_user)
+!!       access_denied
+!!       return
+!!     end
+!!     page_title([@experiment.name, "Sign up"])
+!!   @slots = Slot.find_by_available(@experiment)
+!!     
+!!     if @experiment.filled? or @slots.empty?
+!!       redirect_to :controller=>'experiments', :action=>'filled', :id=>@experiment.hashed_id
+!!       return
+!!     end
+!!     @subject = Subject.new
+!!     @slot_id = params[:slot_id]
+!!     respond_to do |format|
+!!       format.html # new.html.erb
+!!       format.xml  { render :xml => @subject }
+!!     end
+!!   end
+   
+     # GET /subjects/1/edit
+     def edit
+!!     @subject = Subject.find_by_hashed_id(params[:id])
+!!     page_title(["Edit Subject", @subject.name])
+!!     render :layout => 'application'
+!!   end
+     
+     def confirmation
+!!      @subject = Subject.find_by_hashed_id(params[:id])
+!!      @slot = Slot.find_by_hashed_id(params[:slot_id])
+!!      unless @subject.nil? or @slot.nil?
+!!       @experiment = @slot.experiment
+!!       page_group(@experiment.user.group)
+!!     
+!!       page_title([@experiment.name, "Confirmation"])
+!!     else
+!!       page_title("Confirmation not found")
+!!     end
+!!   end
+     
+     def dummy_confirmation
+!!     @experiment = Experiment.find_by_hashed_id(params[:id])
+!!     page_group(@experiment.user.group)
+!!     
+!!     unless @experiment != nil and @experiment.can_modify?(current_user)
+!!       access_denied
+!!       return
+!!     end
+!!     page_title([@experiment.name, "Example Confirmation"])
+!!     @subject = Subject.new(:name => "Test Subject", :email => "test@example.com")
+!!     @slot = Slot.new(:experiment => @experiment, :time => Time.zone.now)
+!!      
+!!     respond_to do |format|
+!!       format.html {render :action => :confirmation}
+!!     end
+!!   end
+   
+     # POST /subjects
+     # POST /subjects.xml
+     def create
+!!      @experiment = Experiment.find_by_hashed_id(params[:experiment_id])
+!!      page_group(@experiment.user.group)
+!!     
+!!     unless @experiment.open? or @experiment.can_modify?(current_user)
+!!       access_denied
+!!       return
+!!     end
+!!     if @experiment.filled?
+!!       redirect_to :controller=>'experiments', :action=>'filled', :id=>@experiment.hashed_id
+!!       return
+!!     end
+!!     existing_subject = Subject.find_by_email(params[:subject][:email])
+!!     if existing_subject
+!!       @subject = existing_subject
+!!     else
+!!       @subject = Subject.new(params[:subject])
+!!     end
+!!     @slots = Slot.find_by_available(@experiment)
+!!     @slot_id = params[:slot_id]
+!!     @slot = Slot.find_by_hashed_id(@slot_id)
+!!     respond_to do |format|
+!!       begin
+!!       if @subject.valid? and !@slot.nil? and !@slot.filled?
+!!         @subject.transaction do
+!!           @appointment = Appointment.new(:slot => @slot, :subject => @subject)
+!!           @appointment.transaction do
+!!             @subject.save!
+!!             @appointment.save!
+!!              #flash[:notice] = 'Subject was successfully created.'
+!!           format.html { redirect_to(:action => :confirmation, :id=>@subject.hashed_id, :slot_id => @slot.hashed_id) }
+!!           end
+!!        end
+!!       else
+!!         @subject = Subject.new(params[:subject]) #hack to hide existing subject's info
+!!         if @slot == nil
+!!           @subject.errors.add(:time_slot, "Please select a time slot to participate in the experiment")
+!!         elsif @slot.filled?
+!!           @subject.errors.add(:time_slot, "The time you selected is now full, please select another")
+!!         end
+!!         format.html { render :action => "new" }
+!!       end
+!!     rescue ActiveRecord::RecordInvalid
+!!         if !@appointment != nil and !@appointment.valid?
+!!            @subject.errors.add(:appointment, " could not be scheduled, did you already sign up for this?")
+!!         end
+!!         format.html { render :action => "new" }
+!!       end
+!!     end
+!!   end
+   
+     # PUT /subjects/1
+     # PUT /subjects/1.xml
+     def update
+!!     @subject = Subject.find_by_hashed_id(params[:id])
+!!     
+!!     respond_to do |format|
+!!       if @subject.update_attributes(params[:subject])
+!!         flash[:notice] = 'Subject was successfully updated.'
+!!         format.html { redirect_to(@subject) }
+!!         format.xml  { head :ok }
+!!       else
+!!         format.html { render :action => "edit" }
+!!         format.xml  { render :xml => @subject.errors, :status => :unprocessable_entity }
+!!       end
+!!     end
+!!   end
+   
+     # DELETE /subjects/1
+     # DELETE /subjects/1.xml
+     def destroy
+!!     @subject = Subject.find_by_hashed_id(params[:id])
+!!     @subject.destroy
+!! 
+!!     respond_to do |format|
+!!       format.html { redirect_to(subjects_url) }
+!!       format.xml  { head :ok }
+!!     end
+!!   end
+!! end
+================================================================================
+app/controllers/locations_controller.rb
+================================================================================
+   class LocationsController < ApplicationController
+     
+     # GET /locations
+     # GET /locations.xml
+     def index
+!!     @locations = Location.all
+!! 
+!!     respond_to do |format|
+!!       format.html # index.html.erb
+!!       format.xml  { render :xml => @locations }
+!!     end
+!!   end
+   
+     # GET /locations/1
+     # GET /locations/1.xml
+     def show
+!!     @location = Location.find_by_hashed_id(params[:id])
+!! 
+!!     respond_to do |format|
+!!       format.html # show.html.erb
+!!       format.xml  { render :xml => @location }
+!!     end
+!!   end
+   
+     # GET /locations/new
+     # GET /locations/new.xml
+     def new
+!!     @location = Location.new
+!! 
+!!     respond_to do |format|
+!!       format.html # new.html.erb
+!!       format.xml  { render :xml => @location }
+!!     end
+!!   end
+   
+     # GET /locations/1/edit
+     def edit
+!!     @location = Location.find_by_hashed_id(params[:id])
+!!   end
+   
+     # POST /locations
+     # POST /locations.xml
+     def create
+!!     @location = Location.new(params[:location])
+!! 
+!!     respond_to do |format|
+!!       if @location.save
+!!         flash[:notice] = 'Location was successfully created.'
+!!         format.html { redirect_to(@location) }
+!!         format.xml  { render :xml => @location, :status => :created, :location => @location }
+!!       else
+!!         format.html { render :action => "new" }
+!!         format.xml  { render :xml => @location.errors, :status => :unprocessable_entity }
+!!       end
+!!     end
+!!   end
+   
+     # PUT /locations/1
+     # PUT /locations/1.xml
+     def update
+!!     @location = Location.find_by_hashed_id(params[:id])
+!! 
+!!     respond_to do |format|
+!!       if @location.update_attributes(params[:location])
+!!         flash[:notice] = 'Location was successfully updated.'
+!!         format.html { redirect_to(@location) }
+!!         format.xml  { head :ok }
+!!       else
+!!         format.html { render :action => "edit" }
+!!         format.xml  { render :xml => @location.errors, :status => :unprocessable_entity }
+!!       end
+!!     end
+!!   end
+   
+     # DELETE /locations/1
+     # DELETE /locations/1.xml
+     def destroy
+!!     @location = Location.find(params[:id])
+!!     @location.destroy
+!! 
+!!     respond_to do |format|
+!!       format.html { redirect_to(locations_url) }
+!!       format.xml  { head :ok }
+!!     end
+!!   end
+!! end
+================================================================================
+app/controllers/google_calendars_controller.rb
+================================================================================
+   class GoogleCalendarsController < ApplicationController
+     
+     # GET /google_calendars
+     # GET /google_calendars.xml
+     def index
+!!     @google_calendars = GoogleCalendar.all
+!! 
+!!     respond_to do |format|
+!!       format.html # index.html.erb
+!!       format.xml  { render :xml => @google_calendars }
+!!     end
+!!   end
+   
+     # GET /google_calendars/1
+     # GET /google_calendars/1.xml
+     def show
+!!     @google_calendar = GoogleCalendar.find_by_hashed_id(params[:id])
+!! 
+!!     respond_to do |format|
+!!       format.html # show.html.erb
+!!       format.xml  { render :xml => @google_calendar }
+!!     end
+!!   end
+   
+     # GET /google_calendars/new
+     # GET /google_calendars/new.xml
+     def new
+!!     @calendars = GoogleCalendar.calendars(current_user.google_token.client)
+!!     respond_to do |format|
+!!       format.html # new.html.erb
+!!       format.xml  { render :xml => @google_calendar }
+!!     end
+!!   end
+   
+     # GET /google_calendars/1/edit
+     def edit
+!!     @google_calendar = GoogleCalendar.find_by_hashed_id(params[:id])
+!!   end
+   
+     # POST /google_calendars
+     # POST /google_calendars.xml
+     def create
+!!     @google_calendar = GoogleCalendar.new(params[:google_calendar])
+!!     @google_calendar.user = current_user
+!! 
+!!     respond_to do |format|
+!!       if @google_calendar.save
+!!         flash[:notice] = 'GoogleCalendar was successfully created.'
+!!         format.html { redirect_to(@google_calendar) }
+!!         format.xml  { render :xml => @google_calendar, :status => :created, :location => @google_calendar }
+!!       else
+!!         format.html { render :action => "new" }
+!!         format.xml  { render :xml => @google_calendar.errors, :status => :unprocessable_entity }
+!!       end
+!!     end
+!!   end
+   
+     # PUT /google_calendars/1
+     # PUT /google_calendars/1.xml
+     def update
+!!     @google_calendar = GoogleCalendar.find_by_hashed_id(params[:id])
+!! 
+!!     respond_to do |format|
+!!       if @google_calendar.update_attributes(params[:google_calendar])
+!!         flash[:notice] = 'GoogleCalendar was successfully updated.'
+!!         format.html { redirect_to(@google_calendar) }
+!!         format.xml  { head :ok }
+!!       else
+!!         format.html { render :action => "edit" }
+!!         format.xml  { render :xml => @google_calendar.errors, :status => :unprocessable_entity }
+!!       end
+!!     end
+!!   end
+   
+     # DELETE /google_calendars/1
+     # DELETE /google_calendars/1.xml
+     def destroy
+!!     @google_calendar = GoogleCalendar.find_by_hashed_id(params[:id])
+!!     @google_calendar.destroy
+!! 
+!!     respond_to do |format|
+!!       format.html { redirect_to(google_calendars_url) }
+!!       format.xml  { head :ok }
+!!     end
+!!   end
+     
+     def get_calendars
+!!     @google_calendars = GoogleCalendar.calendars(params[:login], params[:password])
+!!     
+!!     respond_to do |format|
+!!       format.json {render :json => @google_calendars.to_json()}
+!!     end
+!!   end
+!! end
+================================================================================
+app/controllers/groups_controller.rb
+================================================================================
+   class GroupsController < ApplicationController
+     
+     # GET /groups
+     # GET /groups.xml
+     def index
+!!     @groups = Group.all
+!! 
+!!     respond_to do |format|
+!!       format.html # index.html.erb
+!!       format.xml  { render :xml => @groups }
+!!     end
+!!   end
+   
+     # GET /groups/1
+     # GET /groups/1.xml
+     def show
+!!     @group = Group.obfuscated(params[:id])
+!! 
+!!     respond_to do |format|
+!!       format.html # show.html.erb
+!!       format.xml  { render :xml => @group }
+!!     end
+!!   end
+   
+     # GET /groups/new
+     # GET /groups/new.xml
+     def new
+!!     @group = Group.new
+!! 
+!!     respond_to do |format|
+!!       format.html # new.html.erb
+!!       format.xml  { render :xml => @group }
+!!     end
+!!   end
+   
+     # GET /groups/1/edit
+     def edit
+!!     @group = Group.obfuscated(params[:id])
+!!   end
+   
+     # POST /groups
+     # POST /groups.xml
+     def create
+!!     @group = Group.new(params[:group])
+!! 
+!!     respond_to do |format|
+!!       if @group.save
+!!         flash[:notice] = 'Group was successfully created.'
+!!         format.html { redirect_to(@group) }
+!!         format.xml  { render :xml => @group, :status => :created, :location => @group }
+!!       else
+!!         format.html { render :action => "new" }
+!!         format.xml  { render :xml => @group.errors, :status => :unprocessable_entity }
+!!       end
+!!     end
+!!   end
+   
+     # PUT /groups/1
+     # PUT /groups/1.xml
+     def update
+!!     @group = Group.obfuscated(params[:id])
+!! 
+!!     respond_to do |format|
+!!       if @group.update_attributes(params[:group])
+!!         flash[:notice] = 'Group was successfully updated.'
+!!         format.html { redirect_to(@group) }
+!!         format.xml  { head :ok }
+!!       else
+!!         format.html { render :action => "edit" }
+!!         format.xml  { render :xml => @group.errors, :status => :unprocessable_entity }
+!!       end
+!!     end
+!!   end
+   
+     # DELETE /groups/1
+     # DELETE /groups/1.xml
+     def destroy
+!!     @group = Group.obfuscated(params[:id])
+!!     #@group.destroy
+!! 
+!!     respond_to do |format|
+!!       format.html { redirect_to(groups_url) }
+!!       format.xml  { head :ok }
+!!     end
+!!   end
+!! end
+================================================================================
+app/controllers/users/registrations_controller.rb
+================================================================================
+   class Users::RegistrationsController < Devise::RegistrationsController
+     # Overrides the Devise registration controller for post-processing the user after they register
+    
+     # POST /resource/sign_up
+     def create
+!!     build_resource
+!! 
+!!     if resource.save
+!!       group = Group.obfuscated(params[:group_id])
+!!       resource.group_id = group.id unless group.nil?
+!!       resource.has_role! :experimenter
+!!       resource.save
+!!       if resource.active?
+!!         set_flash_message :notice, :signed_up
+!!         sign_in_and_redirect(resource_name, resource)
+!!       else
+!!        # set_flash_message :notice, :inactive_signed_up, :reason => resource.inactive_message.to_s #Bug? - Devise 1.13.0 Dpitman, 10/28
+!!         redirect_to after_inactive_sign_up_path_for(resource)
+!!       end
+!!     else
+!!       clean_up_passwords(resource)
+!!       render_with_scope :new
+!!     end
+!!   end
+     
+     protected
+     
+         # The path used after sign up. You need to overwrite this method
+       # in your own RegistrationsController.
+       def after_sign_up_path_for(resource)
+!!       after_sign_in_path_for(resource)
+!!     end
+     
+   # The path used after sign up for inactive accounts. You need to overwrite
+       # this method in your own RegistrationsController.
+       def after_inactive_sign_up_path_for(resource)
+!!       root_path
+!!     end
+   
+       # The default url to be used after updating a resource. You need to overwrite
+       # this method in your own RegistrationsController.
+       def after_update_path_for(resource)
+!!       if defined?(super)
+!!         ActiveSupport::Deprecation.warn "Defining after_update_path_for in ApplicationController " <<
+!!           "is deprecated. Please add a RegistrationsController to your application and define it there."
+!!         super
+!!       else
+!!         after_sign_in_path_for(resource)
+!!       end
+!!     end
+!!   
+!! end
+================================================================================
+app/helpers/subjects_helper.rb
+================================================================================
+   module SubjectsHelper
+     
+     def add_to_google_calendar(experiment, slot)
+!!     name = CGI::escape(experiment.name + ' Experiment')
+!!     start_time = CGI::escape(@slot.time.utc.strftime("%Y%m%dT%H%M%SZ"))
+!!     end_time = CGI::escape((@slot.time + @experiment.time_length.minutes).utc.strftime("%Y%m%dT%H%M%SZ"))
+!!     location = CGI::escape(@experiment.location.human_location + ", MIT")
+!!     details = CGI::escape("Location: #{ @experiment.location.human_location } - #{ @experiment.location.url }\n" + \
+!!     @experiment.location.directions + "\n\n" + \
+!!     "Please contact #{ @experiment.user.name } at #{ @experiment.user.email } or #{ number_to_phone(@experiment.user.phone) } if you have any questions.")
+!!     return "<a style='float:right;clear:left;' href=\"http://www.google.com/calendar/event?action=TEMPLATE&text=#{name}&dates=#{start_time}/#{end_time}&details=#{details}&location=#{location}&trp=true&sprop=halab-experiments.mit.edu&sprop=name:Experiment%20Signup\" target=\"_blank\"><img src='http://www.google.com/calendar/images/ext/gc_button2.gif' border=0></a>"
+!!   end
+!! end
+================================================================================
+app/controllers/experiments_controller.rb
+================================================================================
+   class ExperimentsController < ApplicationController
+     
+     before_filter :authenticate_user!, :except => [:participate, :filled]
+     
+     access_control do
+      allow all
+      actions :index, :show, :edit, :create, :new, :update, :destroy do
+         allow :experimenter
+      end
+      
+      actions :admin do
+        allow :admin
+        deny all
+      end
+       
+     end
+     
+     cache_sweeper :experiment_sweeper, :only => [ :index, :show, :participate ]
+   
+   
+     
+     # GET /experiments
+     # GET /experiments.xml
+     def index
+!!     @experiments = Experiment.where(:user_id => current_user.id)
+!!     page_group(current_user.group)
+!!     page_title("Experiments")
+!!     respond_to do |format|
+!!       format.html # index.html.erb
+!!       format.xml  { render :xml => @experiments }
+!!     end
+!!   end
+     
+     def admin
+!!     @experiments = Experiment.order('id DESC')
+!!     page_title(["Admin", "Experiments"])
+!!     respond_to do |format|
+!!       format.html
+!!     end
+!!   end
+   
+     # GET /experiments/1
+     # GET /experiments/1.xml
+     def show
+!!     @experiment = Experiment.obfuscated_query(params[:id]).includes(:slots).first
+!!     page_group(@experiment.user.group)
+!!     
+!!     if @experiment.nil? or !@experiment.can_modify?(current_user)
+!!       access_denied
+!!       return
+!!     end
+!!     page_title(@experiment.name)
+!!     
+!!     respond_to do |format|
+!!       format.html # show.html.erb
+!!       format.xml  { render :xml => @experiment }
+!!     end
+!!   end
+     
+     def filled
+!!     @experiment = Experiment.obfuscated(params[:id])
+!!     page_group(@experiment.user.group)
+!!     
+!!     page_title(@experiment.name + " is full")
+!!     
+!!     render :layout => 'external'
+!!   end
+     
+     def participate
+!!     @experiment = Experiment.obfuscated(params[:id])
+!!     page_group(@experiment.user.group)
+!!     
+!!     unless @experiment.open? or @experiment.can_modify?(current_user)
+!!       access_denied
+!!       return
+!!     end
+!!     page_title(@experiment.name)
+!!     
+!!     render :layout => 'external'
+!!   end
+   
+     # GET /experiments/new
+     # GET /experiments/new.xml
+     def new
+!!     page_title("New Experiment")
+!!     
+!!     @experiment = Experiment.new
+!!     page_group(current_user.group)
+!!     
+!!     @calendars = self.calendars_select_array()
+!!     @locations = self.locations_select_array()
+!!     self.use_markdown_editor = true
+!!     
+!!     respond_to do |format|
+!!       format.html # new.html.erb
+!!       format.xml  { render :xml => @experiment }
+!!     end
+!!   end
+   
+     # GET /experiments/1/edit
+     def edit
+!!     @experiment = Experiment.obfuscated(params[:id])
+!!     page_group(@experiment.user.group)
+!!     
+!!     page_title(["Editing",@experiment.name])
+!!     
+!!     if @experiment.nil? or !@experiment.can_modify?(current_user)
+!!       access_denied
+!!       return
+!!     end
+!!     @calendars = self.calendars_select_array()
+!!     @locations = self.locations_select_array()
+!!     self.use_markdown_editor = true
+!!    
+!!   end
+   
+     # POST /experiments
+     # POST /experiments.xml
+     def create
+!!     @experiment = Experiment.new(params[:experiment])
+!!     
+!!     @experiment.user = current_user
+!!     page_group(@experiment.user.group)
+!!     
+!!     location = Location.obfuscated(params[:location_id])
+!!     @experiment.location = location
+!!     calendar = GoogleCalendar.obfuscated(params[:calendar_id])
+!!     @experiment.google_calendar = calendar
+!!     respond_to do |format|
+!!       if @experiment.save
+!!         flash[:notice] = 'Experiment was successfully created.'
+!!         format.html { redirect_to(:controller => :experiments, :action => :show, :id => @experiment.hashed_id) }
+!!         format.xml  { render :xml => @experiment, :status => :created, :location => @experiment }
+!!       else
+!!         @calendars = self.calendars_select_array()
+!!     @locations = self.locations_select_array()
+!!     self.use_markdown_editor = true
+!!     
+!!         format.html { render :action => "new" }
+!!         format.xml  { render :xml => @experiment.errors, :status => :unprocessable_entity }
+!!       end
+!!     end
+!!   end
+   
+     # PUT /experiments/1
+     # PUT /experiments/1.xml
+     def update
+!!     @experiment = Experiment.obfuscated(params[:id])
+!!     page_group(@experiment.user.group)
+!!     
+!!     if @experiment.nil? or !@experiment.can_modify?(current_user)
+!!       access_denied
+!!       return
+!!     end
+!!     location = Location.obfuscated(params[:location_id])
+!!     @experiment.location = location
+!!     calendar = GoogleCalendar.obfuscated(params[:calendar_id])
+!!     @experiment.google_calendar = calendar
+!!     respond_to do |format|
+!!       if @experiment.update_attributes(params[:experiment])
+!!         flash[:notice] = 'Experiment was successfully updated.'
+!!         format.html { redirect_to(@experiment) }
+!!         format.xml  { head :ok }
+!!       else
+!!       @calendars = self.calendars_select_array()
+!!       @locations = self.locations_select_array()
+!!       self.use_markdown_editor = true
+!!         format.html { render :action => "edit" }
+!!         format.xml  { render :xml => @experiment.errors, :status => :unprocessable_entity }
+!!       end
+!!     end
+!!   end
+   
+     # DELETE /experiments/1
+     # DELETE /experiments/1.xml
+     def destroy
+!!     @experiment = Experiment.obfuscated(params[:id])
+!!     page_group(@experiment.user.group)
+!!     
+!!     if @experiment.nil? or !@experiment.can_modify?(current_user)
+!!       access_denied
+!!       return
+!!     end
+!!     @experiment.destroy
+!! 
+!!     respond_to do |format|
+!!       format.html { redirect_to(experiments_url) }
+!!       format.xml  { head :ok }
+!!     end
+!!   end
+     
+      
+     def calendars_select_array
+!!    return GoogleCalendar.order("name")
+!!   end
+    
+     def locations_select_array
+!!    return Location.order("building")
+!!   end
+!! end
+================================================================================
+app/models/google_calendar.rb
+================================================================================
+   require 'gcal4ruby'
+   class GoogleCalendar < ObfuscatedRecord
+     
+     has_many :experiments
+     
+     belongs_to :user
+     
+     has_one :google_token, :through => :user
+     
+     attr_accessible :name
+      
+     validates_presence_of :name
+     
+     validate :confirm_calendar
+     
+     def self.calendars(accesstoken)
+!!     service = self.get_service(accesstoken)
+!!     unless service == nil
+!!       return service.calendars
+!!     end
+!!   end
+     
+     def find_calendar_id
+!!     service = get_service()
+!!     if service
+!!     new_calendar = GCal4Ruby::Calendar.find(service, name, {'max-results' => '10'})
+!!     if new_calendar == nil or new_calendar.empty?
+!!       errors.add(:name, "Calendar could not be found")
+!!       return false
+!!     end
+!!     new_calendar = new_calendar.first
+!!     self.calendar_id = new_calendar.id
+!!     self.name = new_calendar.title
+!!     end
+!!   end
+     
+     def calendar_html
+!!     my_calendar = self.calendar
+!!     html = "Error: calendar not found"
+!!     unless my_calendar == nil
+!!       html = my_calendar.to_iframe({:showCalendars => '0', :showTz => '0', :showTitle => '0'})
+!!       #logger.info("Cal: #{html}")
+!!     end
+!!     return html
+!!   end
+     
+     def confirm_calendar
+!!     service = get_service()
+!!     if service != nil and !name.blank?
+!!       new_calendar = GCal4Ruby::Calendar.find(service, name, {:scope => :first})
+!!       unless new_calendar == nil || new_calendar.empty?
+!!         return true
+!!       end
+!!     end
+!!     errors.add(:name, " could not find the calendarg")
+!!       
+!!     return false
+!!   end
+     
+     def calendar
+!!     service = get_service()
+!!     begin
+!!     if service != nil
+!!       my_calendar = GCal4Ruby::Calendar.find(service, {:id=>self.calendar_id})
+!!       return nil if my_calendar.class == Array.class and my_calendar.empty?
+!!       
+!!       return my_calendar
+!!     end
+!!     rescue GData4Ruby::HTTPRequestFailed
+!!       return nil
+!!     end
+!!   end
+     
+     def add_scheduled_slot(experiment, slot, subject)
+!!     start_time = slot.time
+!!     endtime = start_time + experiment.time_length.minutes
+!!     event = GCal4Ruby::Event.new(get_service, {:calendar => self.calendar})
+!!     event.title = experiment.name + ' - ' + subject.name
+!!     event.content = "An experiment for " + experiment.name \
+!!                   + " was automatically scheduled for this time by the Lab Cog Scheduler\n"  \
+!!                   + "Subject: " + subject.name \
+!!                   + "\n\nExperiment Contact " + experiment.user.name + ", " + experiment.user.email \
+!!                   + "Lab Cog - Escape the Experiment Grind - http://www.labcog.com"
+!!     event.where = experiment.location.human_location
+!!     event.start_time = start_time
+!!     event.end_time = endtime
+!!     event.save
+!!   end 
+     
+     def get_service()
+!!     GoogleCalendar.get_service(self.google_token.client)
+!!   end
+     
+     def self.get_service(accesstoken)
+!!     service = GCal4Ruby::Service.new({:use_ssl => true, :check_public => false, :debug => false}, :OAuthService)
+!!     service.authenticate({:access_token=>accesstoken}) 
+!!     return service
+!!   end
+!! end
+================================================================================
+app/controllers/oauth_consumers_controller.rb
+================================================================================
+   require 'oauth/controllers/consumer_controller'
+   class OauthConsumersController < ApplicationController
+     include Oauth::Controllers::ConsumerController
+     
+     before_filter :authenticate_user!, :only=>:index
+     
+     def index
+!!     @consumer_tokens=ConsumerToken.all :conditions=>{:user_id=>current_user.id}
+!!     @services=OAUTH_CREDENTIALS.keys-@consumer_tokens.collect{|c| c.class.service_name}
+!!   end
+     
+     
+     # HACK - 12/10/10 - DPitman
+     # For some reason, OAuth plugin's controller method doesn't get recognized...
+     def callback
+!!           logger.info "CALLBACK"
+!!           @request_token_secret=session[params[:oauth_token]]
+!!           if @request_token_secret
+!!             logger.info("#{@consumer}")
+!!             @token=@consumer.find_or_create_from_request_token(current_user,params[:oauth_token],@request_token_secret,params[:oauth_verifier])
+!!             session[params[:oauth_token]] = nil
+!!             if @token
+!!               # Log user in
+!!               if logged_in?
+!!                 flash[:notice] = "#{params[:id].humanize} was successfully connected to your account"
+!!               else
+!!                 self.current_user = @token.user 
+!!                 flash[:notice] = "You logged in with #{params[:id].humanize}"
+!!               end
+!!               go_back
+!!             else
+!!               flash[:error] = "An error happened, please try connecting again"
+!!               redirect_to oauth_consumer_url(params[:id])
+!!             end
+!!           end
+!! 
+!!         end
+           def self.included(controller)
+!!                 controller.class_eval do  
+!!                   before_filter :load_consumer, :except=>:index
+!!                   skip_before_filter :verify_authenticity_token,:only=>:callback
+!!                 end
+!!               end
+   
+                 def index
+!!                 @consumer_tokens=ConsumerToken.all :conditions=>{:user_id=>current_user.id}
+!!                 # The services the user hasn't already connected to
+!!                 @services=OAUTH_CREDENTIALS.keys-@consumer_tokens.collect{|c| c.class.service_name}
+!!               end      
+   
+                 # creates request token and redirects on to oauth provider's auth page
+                 # If user is already connected it displays a page with an option to disconnect and redo
+                 def show
+!!                 unless @token
+!!                   @request_token=@consumer.get_request_token(callback_oauth_consumer_url(params[:id]))
+!!                   session[@request_token.token]=@request_token.secret
+!!                   if @request_token.callback_confirmed?
+!!                     redirect_to @request_token.authorize_url
+!!                   else
+!!                     redirect_to(@request_token.authorize_url + "&oauth_callback=#{callback_oauth_consumer_url(params[:id])}")
+!!                   end
+!!                 end
+!!               end
+   
+                 def destroy
+!!                 throw RecordNotFound unless @token
+!!                 @token.destroy
+!!                 if params[:commit]=="Reconnect"
+!!                   redirect_to oauth_consumer_url(params[:id])
+!!                 else
+!!                   flash[:notice] = "#{params[:id].humanize} was successfully disconnected from your account"
+!! 
+!!                   go_back
+!!                 end
+!!               end
+   
+                 protected
+   
+                 # Override this in your controller to decide where you want to redirect user to after callback is finished.
+                 def go_back
+!!                 redirect_to root_url
+!!               end
+   
+                 def load_consumer
+!!                 consumer_key=params[:id].to_sym
+!!                 logger.info("Consumer Key: #{consumer_key.to_s}")
+!!                 
+!!                 throw RecordNotFound unless OAUTH_CREDENTIALS.include?(consumer_key)
+!!                 deny_access! unless logged_in? || OAUTH_CREDENTIALS[consumer_key][:allow_login]
+!!                 @consumer="#{consumer_key.to_s.camelcase}Token".constantize
+!!                 @token=@consumer.find(:first, :conditions=>{:user_id=>current_user.id.to_s}) if logged_in?
+!!               end
+   
+                 # Override this in you controller to deny user or redirect to login screen.
+                 def deny_access!
+!!                 head 401
+!!               end
+     
+     # Change this to decide where you want to redirect user to after callback is finished.
+     # params[:id] holds the service name so you could use this to redirect to various parts
+     # of your application depending on what service you're connecting to.
+     def go_back
+!!     redirect_to root_url
+!!   end
+     
+     # The plugin requires logged_in? to return true or false if the user is logged in. Uncomment and
+     # call your auth frameworks equivalent below if different. eg. for devise:
+     #
+     def logged_in?
+!!      user_signed_in?
+!!   end
+       
+     # The plugin requires current_user to return the current logged in user. Uncomment and
+     # call your auth frameworks equivalent below if different.
+     # def current_user
+     #   current_person
+     # end
+   
+     # The plugin requires a way to log a user in. Call your auth frameworks equivalent below 
+     # if different. eg. for devise:
+     #
+     def current_user=(user)
+!!      sign_in(user)
+!!   end
+     
+     # Override this to deny the user or redirect to a login screen depending on your framework and app
+     # if different. eg. for devise:
+     #
+     def deny_access!
+!!      raise Acl9::AccessDenied
+!!   end
+!! 
+!!   
+!! end
+================================================================================
+app/controllers/users_controller.rb
+================================================================================
+   class UsersController < ApplicationController
+     # Controller for handling Users
+     before_filter :authenticate_user!, :except => [:sign_in, :sign_up, :sign_out]
+     
+     access_control do
+       
+       actions :index, :update, :edit, :show do
+         allow :experimenter
+       end
+       
+       actions :sign_in, :sign_up, :sign_out do
+         allow all
+       end
+       
+     end
+        
+     def new
+!!     page_title('Signup')
+!!     @user = User.new()
+!!     @groups = Group.all
+!!   end
+    
+   
+     def update
+!!     @user = User.obfuscated(params[:id])
+!!     user_id = @user.id if @user
+!!     begin
+!!     if logged_in? && (self.current_user.id.to_i == user_id.to_i || self.user_admin?)
+!!       flash.sweep
+!!     
+!!       if @user.update_attributes(params[:user])
+!!         flash[:notice] = "Thanks, we got your changes!"
+!!         @user.reload
+!!       else
+!!         flash[:warning] = "We were unable to make your changes, please check for errors below"
+!!       end
+!!       render :action => :edit, :params => {:id => params[:id]}
+!!     else
+!!       flash[:notice] = "You cannot edit that user"
+!!       @user = nil
+!!       return access_denied
+!!     end
+!!     
+!!     rescue ActiveRecord::RecordInvalid
+!!         render :action => "edit", :id => params[:id]
+!!     end
+!!   end
+     
+     def edit
+!!     page_title('Edit your information')
+!!     @user = User.obfuscated(params[:id])
+!!     user_id = @user.id if @user
+!!     if  logged_in? && (self.current_user_id == user_id.to_i  || self.user_admin? )
+!!       @cu = self.current_user
+!!       #flash[:notice] = "You're editing!"
+!!     else
+!!       flash[:notice] = "Action not allowed"
+!!       @user = nil
+!!       access_denied
+!!     end
+!!     
+!!   end
+     
+     def show
+!!     @user = User.obfuscated(params[:id])
+!!     page_title(["Users", "#{@user.login} (#{@user.hashed_id})"])
+!!     user_id = @user.id if @user
+!!     if logged_in? && (user_id == current_user_id || self.user_admin?)
+!!       #flash[:notice] = "You're showing!"
+!!     else
+!!       flash[:notice] = "Action not allowed"
+!!       @user = nil
+!!       redirect_back_or_default("/")
+!!     end
+!!   end
+     
+     def index
+!!     page_title("Users")
+!!     if true #self.logged_in?# and self.user_admin?
+!!       @users = User.all
+!!     else
+!!       access_denied
+!!       return
+!!     end
+!!   end
+!! 
+!! end
+================================================================================
+app/models/appointment_notifier.rb
+================================================================================
+   class AppointmentNotifier < ActionMailer::Base
+     default :from => "noreply@halab-experiments.mit.edu"
+     layout 'mailers/default'
+     
+     def reminder(appointment)
+!!     css 'email'
+!!     
+!!     @subject = 'Reminder'
+!!     setup_email(appointment)
+!!   end
+     
+     def notice(appointment)
+!!     css 'email'
+!!     @recipient = "#{appointment.slot.experiment.user.email}"
+!!     @subject = 'Signup Notice'
+!!     setup_email(appointment)
+!!   end
+     
+     def cancelled(appointment)
+!!     css 'email'
+!!     
+!!     @subject = 'Experiment Cancelled'
+!!     setup_email(appointment)
+!!   end
+     
+     def confirmation(appointment)
+!!     css 'email'
+!!   
+!!     @subject = ' Confirmation'
+!!     setup_email(appointment)
+!!   end
+    
+     protected
+       def setup_email(appointment)
+!!       subject = appointment.subject
+!!       slot = appointment.slot
+!!       @recipient ||=  "#{subject.email}"
+!!       @participant = subject
+!!       @slot = slot
+!!       @experiment = slot.experiment
+!!       @logo_path = slot.experiment.user.group.logo_file_name
+!!       mail(:to => @recipient,
+!!            :subject => slot.experiment.name + " :: " + @subject)
+!! 
+!!       css 'email'
+!!     end
+!! 
+!! end
+================================================================================
+app/helpers/application_helper.rb
+================================================================================
+   # Methods added to this helper will be available to all templates in the application.
+   module ApplicationHelper
+     
+     def markdown(content)
+!!     return raw content.to_html
+!!   end
+     
+     def show_admin_content?
+!!     signed_in_as_admin?
+!!   end
+     
+     def header_page_title
+!!     return ' :: ' + page_title() if @my_page_title
+!!   end
+     
+     def page_title
+!!     @my_page_title.join(' : ') if @my_page_title
+!!   end
+     
+     def site_group_name
+!!     return @my_group.name unless @my_group.nil?
+!!     return ""
+!!   end
+     
+     def site_group_logo
+!!     unless @my_group.nil?
+!!       return  "<img src='/#{@my_group.logo_file_name}' />"
+!!     end
+!!     return ""
+!!   end
+     
+     def site_group_logo_path
+!!     unless @my_group.nil?
+!!       return  @my_group.logo_file_name
+!!     end
+!!     return ""
+!!   end
+!!   
+!! end
+================================================================================
+app/controllers/application_controller.rb
+================================================================================
+   # Filters added to this controller apply to all controllers in the application.
+   # Likewise, all the methods added will be available for all controllers.
+   
+   class ApplicationController < ActionController::Base
+     helper :all # include all helpers, all the time
+     protect_from_forgery # See ActionController::RequestForgeryProtection for details
+     
+     rescue_from 'Acl9::AccessDenied', :with => :access_denied
+     
+     before_filter :set_current_user
+     
+     layout 'application'
+     
+     def set_xhr_flash
+!!     flash.discard if request.xhr?
+!!   end
+     
+     def correct_safari_and_ie_accept_headers
+!!     ajax_request_types = ['text/javascript', 'application/json', 'text/xml']
+!!     request.accepts.sort! { |x, y| ajax_request_types.include?(y.to_s) ? 1 : -1 } if request.xhr?
+!!   end
+     
+     def signed_in_as_admin?
+!!     signed_in? && current_user.admin?
+!!   end
+     
+     def controller_page_title(value)
+!!     @my_page_title = [value]
+!!   end
+     
+     def page_title(value)
+!!     @my_page_title ||= []
+!!     if value.kind_of? String
+!!       @my_page_title << value
+!!     elsif value.kind_of? Array
+!!       @my_page_title += value
+!!     end
+!!   end
+     
+     def page_group(value)
+!!     @my_group = value
+!!   end
+    
+    def development_env?
+!!    Rails.env.development?
+!!  end
+    
+    def production_env?
+!!    Rails.env.production?
+!!  end
+    
+      def use_markdown_editor=(value)
+!!     @use_markdown_editor = (value)
+!!   end
+     
+     def use_markdown_editor?
+!!     return @use_markdown_editor
+!!   end
+     
+     def render_optional_error_file(status_code)
+!!     if status_code == :not_found
+!!       render_404
+!!     else
+!!       super
+!!     end
+!!   end
+       
+     $DEVELOPER_FLASH = Hash.new()
+     
+    helper_method  :signed_in_as_admin?, :controller_page_title, :development_env?, :production_env?, :use_markdown_editor=, :use_markdown_editor?
+   
+   private
+    # This method is run a priori so models can know which user is
+    # is interacting with them.
+    def set_current_user
+!!    unless current_user == nil
+!!   ActiveRecord::Base.current_user_id = current_user.id
+!!   end
+!!  end
+   
+     def render_404
+!!   page_title("404 Error")
+!!   respond_to do |type| 
+!!     type.html { render :template => "home/error_404", :layout => 'application', :status => 404 } 
+!!     type.all  { render :nothing => true, :status => 404 } 
+!!   end
+!!     true  # so we can do "render_404 and return"
+!!   end
+   
+     def access_denied
+!!     if current_user
+!!       render :template => 'home/access_denied'
+!!     else
+!!       flash[:notice] = 'Access denied. Try to log in first.'
+!!       redirect_to login_path
+!!     end
+!!   end    
+!! 
+!! end
+================================================================================
+app/models/experiment_sweeper.rb
+================================================================================
+    class ExperimentSweeper < ActionController::Caching::Sweeper
+       observe Experiment, Slot, Appointment
+   
+       def after_create(record)
+!!       expire_cache(record)
+!!     end
+   
+       def after_save(record)
+!!       expire_cache(record)
+!!     end
+       
+       def after_destroy(record)
+!!       expire_cache(record)
+!!     end
+       
+       def expire_cache(record)
+!!       
+!!       experiment = record.is_a?(Experiment) ? record : record.experiment
+!!       # Pages
+!!       expire_page(:controller => "home", :action => "index")
+!!       
+!!       # Action
+!!       expire_action(:controller => "experiments", :action => %w( show participate ), :id => experiment.hashed_id)
+!!       expire_action(:controller => "subjects", :action => "new", :id => experiment.hashed_id)
+!!       expire_action(:controller => "experiments", :action => "index")
+!!     
+!!     end
+!!   end
+================================================================================
+app/models/experiment_notifier.rb
+================================================================================
+   class ExperimentNotifier < ActionMailer::Base
+     default :from => "noreply@halab-experiments.mit.edu"
+     layout 'mailers/default'
+     def schedule(experiment, day = Date.tomorrow)
+!!     @subject    = "#{experiment.name} Upcoming Schedule"
+!!     @slots = experiment.occupied_slots(day)
+!!     @schedule_date = day.strftime("%B %e (%a)")
+!!     setup_email(experiment)
+!!   end
+    
+     protected
+       def setup_email(experiment)
+!!       @experiment = experiment
+!!       
+!!       mail(:to => "#{experiment.user.email}",
+!!            :subject => experiment.name + ' :: ' + @subject)
+!! 
+!!       css 'email'
+!!     end
+!! end
+================================================================================
+app/models/experiment.rb
+================================================================================
+   class Experiment < ObfuscatedRecord
+       belongs_to :user
+       belongs_to :google_calendar
+       belongs_to :location
+       has_many :slots, :order => :time, :dependent => :destroy
+       
+       # ACL9 authorization support
+       acts_as_authorization_object
+       
+       acts_as_markdown :desc
+       
+       validates_presence_of     :name
+       validates_presence_of     :desc
+       validates_presence_of     :user
+       validates_presence_of     :location
+       validates_numericality_of :time_length, :only_integer => true, :greater_than => 0
+       validates_numericality_of :num_subjects, :only_integer => true, :greater_than => 0
+       validates_numericality_of :compensation, :only_integer => true, :greater_than => -1
+       validates_numericality_of :num_subjects_per_slot, :only_integer => true, :greater_than => 0
+     
+       def open?
+!!       self.read_attribute(:open)
+!!     end
+      
+       def is_occupied(day)
+!!       occupied = occupied_slots(day)
+!!       return !occupied.empty?
+!!     end
+       
+       def occupied_slots(day)
+!!       occupied = Array.new
+!!       slots = Slot.find_by_experiment(self.id).find_by_day(day)
+!!       slots.each do |slot|
+!!         occupied << slot if slot.occupied?
+!!       end
+!!       return occupied
+!!   end
+     
+     
+     # Total number of subjects signed up
+     # not including cancelled slots
+     def subjects_count
+!!     subject_count = 0
+!!     self.slots.each do |slot|
+!!       subject_count += slot.subjects.count unless slot.cancelled?
+!!     end
+!!     return subject_count
+!!   end
+   
+     def filled?
+!!     return subjects_count >= self.num_subjects
+!!   end
+     
+      def owned_by?(user)
+!!       return user.id == self.user_id
+!!   end
+     
+     def human_time_length
+!!      return "---" if time_length <= 0 
+!!      hours = time_length.minutes / 1.hours
+!!      minutes = time_length - 60 * hours
+!!      human_arry = []
+!!      if hours > 1
+!!       human_arry << "#{hours} hour"
+!!      elsif hours == 1
+!!       human_arry << "1 hr"
+!!     end
+!!     if minutes > 1
+!!       human_arry << "#{minutes} minutes"
+!!     elsif
+!!       human_arry << "#{minutes} minute"
+!!     end
+!!      return human_arry.join(" and ")
+!!   end
+     
+     def time_zone
+!!     return "EST"
+!!   end
+     
+     def can_modify?(user)
+!!     return false if user == :false || user == nil
+!!     return (user.id == self.user_id) || user.has_role?(:admin)
+!!   end
+!! end
+================================================================================
+lib/custom_validations.rb
+================================================================================
+   class MissingRelationError < StandardError; end
+   
+   module CustomValidations
+     def self.included(base)
+       base.extend ClassMethods
+     end
+   
+     module ClassMethods
+    
+       def validates_email(*attr_names)
+!!       configuration = attr_names.extract_options!
+!!       attr_names = :email if attr_names.empty?
+!!       validates_presence_of(attr_names)
+!!       validates_length_of(attr_names, :within => 6..100)
+!!       validates_format_of(attr_names, 
+!!         :with => /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,4})\Z/i,
+!!         :message => "Please enter an email address like me@example.com")
+!!         
+!!       if configuration[:encrypted] 
+!!         attr_names = ("encrypted_" + attr_names.to_s).to_sym
+!!       end
+!!       validates_uniqueness_of(attr_names, :case_sensitive => false) \
+!!         if configuration[:unique]
+!!     end
+!! 
+!!     
+!!   end
+!! end
+   
+   class ActiveRecord::Base
+     include CustomValidations
+   end
+================================================================================
+app/controllers/preview_controller.rb
+================================================================================
+   class PreviewController < ApplicationController
+     
+     def markdown
+!!     render :layout => false
+!!   end
+!! end
+================================================================================
+app/models/user.rb
+================================================================================
+   class User < ObfuscatedRecord
+     # Include default devise modules. Others available are:
+     # :token_authenticatable, :confirmable, :lockable and :timeoutable
+     devise :database_authenticatable, :registerable,
+            :recoverable, :rememberable, :trackable, :validatable,
+            :confirmable
+   
+     has_many :consumer_tokens
+     has_one  :google_token, :class_name=>"GoogleToken", :dependent=>:destroy
+     has_many :google_calendars
+   
+     # Add ACL9's support for roles/authorization
+     acts_as_authorization_subject  :association_name => :roles
+   
+     # Setup accessible (or protected) attributes for your model
+     attr_accessible :email, :password, :password_confirmation, :remember_me, :user_name, :name, :phone
+     attr_readonly :user_name
+     
+     #Location of common passwords YAML array
+     @@common_passwds = YAML.load_file(Rails.root.join("lib", "common_pwds.yaml"))
+     #Error string for a password which fails a quality test
+     @@quality_failure_text = "is not strong enough. Try including a few numbers and capital letters."
+   
+     before_save :clean_phone
+     
+     # Custom habtms
+     has_many :experiments
+     belongs_to :group
+   
+     validates_presence_of     :user_name
+     validates_presence_of     :name
+     #validates_length_of        :user_name,    :within => @@login_length..40
+     validates_uniqueness_of    :user_name, :case_sensitive => false
+     #validates_length_of :phone, :minimum => 10, :allow_blank => true, :allow_nil => true
+     
+     def clean_phone
+!!     unless self.phone.nil?
+!!      self.phone = self.phone.gsub(/[^\d]/,'')
+!!     end
+!!   end
+     
+     # has_role? simply needs to return true or false whether a user has a role or not.  
+     #def has_role?(role_sym)
+     #  @roles_list ||= self.roles.collect(&:slug).collect(&:underscore).collect(&:to_sym)
+     #  @roles_list.any? { |r| r == role_sym }
+     #end
+      
+     def validate_password
+!!     if password_required?
+!!       #pp "#{self.login} - #{self.password}"
+!!       quality =  password_quality_passes?(self.password)
+!!       not_common = common_password_check?(self.password)
+!!       # Do not allow usernames and passwords to be identical
+!!       not_same = (login.to_s.downcase != self.password.to_s.downcase)
+!!       #pp "Passes: #{passes}"
+!!       errors.add("password", @@quality_failure_text) unless quality
+!!       errors.add("password", "is too common, try something else.") unless not_common
+!!       errors.add("password", "cannot be the same as the login.") unless not_same
+!!       #Rails.logger(errors)
+!!       return (quality and not_common and not_same)
+!!     end
+!!    return true
+!!   end
+     
+     private
+      # Checks password against common list of passwords and custom list of passwords
+       @@filter_common_passwords = true
+       
+          # Performs quality checks upon password
+       def password_quality_passes?(password)
+!!      password_regexp = ""
+!!      passes_regexp_test = true
+!!      # Full- ^.*(?=\w*\d)(?=\w*[a-z])(?=\w*[A-Z]).*$
+!!      if @@password_robustness_level >= 2
+!!        password_regexp += '(?=.*[a-z])(?=.*[A-Z])'
+!!        
+!!      end
+!!      if  @@password_robustness_level >= 1
+!!         password_regexp += '(?=.*\d)'
+!!      end
+!!      if  @@password_robustness_level >= 1
+!!         #password_regexp += "{#{@@password_length},40}"
+!!         quality_check = Regexp.new('^.*' + password_regexp + '.*$')
+!!         #pp quality_check
+!!         passes_regexp_test = (quality_check.match(password) != nil)
+!!      end
+!!    
+!!      return passes_regexp_test
+!!     end
+       
+      #Tests to see if the password is in a common list of passwords
+       # returns true if the password does _not_ match any
+       def common_password_check?(password)
+!!       if @@filter_common_passwords && !password.nil?
+!!         return !@@common_passwds.include?(password.downcase)
+!!      end
+!!     end
+!! end
+================================================================================
+app/models/obfuscated_record.rb
+================================================================================
+   class ObfuscatedRecord < ActiveRecord::Base
+     self.abstract_class = true
+     has_hashed_id
+     
+     def self.obfuscated(hashed_id)
+!!     obfuscated_query(hashed_id).first
+!!   end
+     
+     def self.obfuscated_query(hashed_id)
+!!     where(:hashed_id => hashed_id)
+!!   end
+     
+     def self.find_by_obfuscated_query!(hashed_id)
+!!     where(:hashed_id => hashed_id)
+!!   end
+!! end
+================================================================================
+app/models/group.rb
+================================================================================
+   class Group < ObfuscatedRecord
+     has_many :users
+     has_many :experiments, :through => :users
+        
+     # ACL9 authorization support
+     #acts_as_authorization_object
+     
+     
+     # Validations
+     validates_presence_of     :name
+     
+     validates_uniqueness_of   :logo_file_name
+     validates_uniqueness_of   :name, :case_sensitive => false
+     
+     def open_experiments
+!!     open_exps = Array.new
+!!     experiments.each do |exp|
+!!       open_exps << exp if exp.open?
+!!     end
+!!     return open_exps
+!!   end
+!! end
+================================================================================
+app/models/slot.rb
+================================================================================
+   class Slot < ObfuscatedRecord
+     belongs_to :experiment
+     has_many :appointments, :dependent => :destroy
+     has_many :subjects, :through => :appointments
+     
+     validates_presence_of :experiment
+     validates_presence_of :time
+     attr_readonly :experiment
+     
+     
+     scope :find_by_day, lambda { |d| where(:time  => d.beginning_of_day_in_zone..(d+1.day).beginning_of_day_in_zone).order("time") }
+     scope :find_by_occupied, lambda { |e| where(:appointments_count => 1..e.num_subjects_per_slot, :cancelled => false, :experiment_id => e.id).order('time') }
+     scope :find_by_available, lambda { |e| where(:appointments_count => 0...e.num_subjects_per_slot,:cancelled => false, :experiment_id => e.id, :time => (Time.zone.now+e.slot_close_time.minutes)..(Time.zone.now + 1.years)).order('time') }
+     scope :find_by_full, lambda { |e| where(:appointments_count => e.num_subjects_per_slot, :cancelled => false, :experiment_id => e.id).order('time') }
+     scope :find_by_experiment, lambda { |e| where(:experiment_id => e).includes(:experiment)}
+     
+     validate :limit_appointments
+     
+     def open?
+!!     return (!self.expired? and !self.filled?)
+!!   end
+     
+     def expired?
+!!     return nil if self.time.nil?
+!!     return Time.zone.now+experiment.slot_close_time.minutes > self.time
+!!   end
+     
+     def occupied?
+!!     return !self.appointments.empty?
+!!   end
+     
+     def filled?
+!!     return self.appointments.count >= self.experiment.num_subjects_per_slot
+!!   end
+     
+     def empty?
+!!     return self.appointments.empty?
+!!   end
+     
+     def cancelled?
+!!     return self.cancelled
+!!   end
+     
+     def cancel
+!!     self.cancelled = true
+!!   end
+     
+     def limit_appointments
+!!     return false if self.experiment == nil
+!!     unless self.appointments.count <= self.experiment.num_subjects_per_slot
+!!       errors.add("slot", " is filled to capacity")
+!!       return false
+!!     end
+!!     return true
+!!   end
+     
+     def parse_datetime(datetimeString, format='%m/%d/%y %I:%M %p')
+       begin
+         datetime = DateTime.strptime(datetimeString, format)
+!!       self.time = datetime
+!!     rescue ArgumentError
+!!       self.time = nil
+!!     end 
+!!   end
+     
+     def strfdate
+      return self.time.strftime("%m/%d/%y") unless self.time == nil
+      return ""
+     end
+     
+     
+     def hour
+        self.time.strftime("%I")
+     end
+     
+     def minute
+        self.time.strftime("%M")
+     end 
+     
+     def meridian
+       self.time.strftime("%p")
+     end
+     
+     def human_datetime
+       return "---" if time.nil? 
+       return time.strftime("%B %e (%a) @ %I:%M %p")
+     end
+     
+     def human_date
+       return "---" if time.nil? 
+       return time.strftime("%b %e (%a)")
+     end
+     
+     def human_day_of_week
+!!     return "---" if time.nil? 
+       return time.strftime("%a")
+     end
+     
+     def human_time
+!!     return "---" if time.nil? 
+!!     return time.strftime("%I:%M %p")
+!!   end
+!!   
+!! end
+================================================================================
+app/models/location.rb
+================================================================================
+   class Location < ObfuscatedRecord
+     has_many :experiments
+     validates_presence_of :building
+     validates_presence_of :room
+     validates_uniqueness_of :room, :scope => :building
+     
+     # ACL9 authorization support
+     acts_as_authorization_object
+     
+     def url
+!!     return "http://whereis.mit.edu/?selection=#{building}&zoom=16"
+!!   end
+     
+     def human_location
+!!     return "Building #{building}-#{room}"
+!!   end
+!!   
+!! end
+================================================================================
+app/controllers/home_controller.rb
+================================================================================
+   class HomeController < ApplicationController
+     layout 'external'
+   
+     access_control do
+       allow all
+     end  
+     
+     caches_page :index
+     cache_sweeper :experiment_sweeper, :only => [ :index ]
+   
+     
+     def index
+!!     @groups = Group.all
+!!   end
+!!   
+!! end
+================================================================================
+app/models/consumer_token.rb
+================================================================================
+   require 'oauth/models/consumers/token'
+   class ConsumerToken < ActiveRecord::Base
+     include Oauth::Models::Consumers::Token
+     def self.attributes_protected_by_default # default is ["id","type"] '
+!!     ["id"] 
+!!   end
+     # Modify this with class_name etc to match your application
+     belongs_to :user
+     
+   end
+================================================================================
+app/validators/email_validator.rb
+================================================================================
+   require 'mail'
+   
+   # From http://my.rails-royce.org/2010/07/21/email-validation-in-ruby-on-rails-without-regexp/
+   
+   class EmailValidator < ActiveModel::EachValidator
+     def validate_each(record,attribute,value)
+       begin
+         m = Mail::Address.new(value)
+         # We must check that value contains a domain and that value is an email address
+         r = m.domain && m.address == value
+         t = m.__send__(:tree)
+         # We need to dig into treetop
+         # A valid domain must have dot_atom_text elements size > 1
+         # user@localhost is excluded
+         # treetop must respond to domain
+         # We exclude valid email values like <user@localhost.com>
+         # Hence we use m.__send__(tree).domain
+         r &&= (t.domain.dot_atom_text.elements.size > 1)
+!!     rescue Exception => e   
+!!       r = false
+!!     end
+       record.errors[attribute] << (options[:message] || "is invalid") unless r
+     end
+   end
+================================================================================
+lib/hashed_id.rb
+================================================================================
+   
+   # Obfuscate ids
+   HASHED_PRIME = 321060967
+   HASHED_MAXID = 2**31-1
+   
+   class Fixnum
+     def to_hashed_id
+       self * HASHED_PRIME & HASHED_MAXID
+     end
+   end
+   
+   module HashedId
+     
+     def self.included(base)
+       base.extend ActsAs
+     end
+   
+     module ActsAs
+       # Add ID-hashing behavior to this model
+       # - it requires a hashed_id column in the database
+       # - after the first save, its id will be hashed and saved
+       def has_hashed_id(options={})
+         self.send(:include, HashedId::InstanceMethods)
+         after_create :save_hashed_id
+       end
+     end
+   
+     module InstanceMethods
+       def save_hashed_id
+         # skip validations since we just want to save this hashed id
+         # Relies on our extension to ActiveRecord to just update the 
+         # hashed_id attribute
+         self.update_attribute(:hashed_id, self.id.to_hashed_id)
+       end
+   
+       def to_param
+!!       (self.hashed_id || self.id.to_hashed_id).to_s
+!!     end
+       
+       def humanized_id
+!!       return self.hashed_id.to_s(16) if self.hashed_id
+!!       "---"
+!!     end
+!!   end
+!! end
+   
+   class ActiveRecord::Base
+     include HashedId
+   end
+================================================================================
+app/models/appointment.rb
+================================================================================
+   class Appointment < ActiveRecord::Base
+     belongs_to :slot, :counter_cache => true
+     belongs_to :subject, :counter_cache => true, :dependent => :destroy
+     has_one :experiment, :through => :slot
+     validates_uniqueness_of :subject_id, :scope => [:slot_id]
+   
+     # ACL9 authorization support
+     acts_as_authorization_object
+   
+   end
+================================================================================
+app/helpers/sessions_helper.rb
+================================================================================
+   module SessionsHelper
+   end
+================================================================================
+app/models/role.rb
+================================================================================
+   class Role < ActiveRecord::Base
+     acts_as_authorization_role # Implements ACL9's roles
+   end
+================================================================================
+app/helpers/experiments_helper.rb
+================================================================================
+   module ExperimentsHelper
+   end
+================================================================================
+app/helpers/users_helper.rb
+================================================================================
+   module UsersHelper
+     
+   end
+================================================================================
+app/helpers/slots_helper.rb
+================================================================================
+   module SlotsHelper
+   end
+================================================================================
+app/helpers/google_calendars_helper.rb
+================================================================================
+   module GoogleCalendarsHelper
+   end
+================================================================================
+app/helpers/locations_helper.rb
+================================================================================
+   module LocationsHelper
+   end
+================================================================================
+app/helpers/preview_helper.rb
+================================================================================
+   module PreviewHelper
+   end
+================================================================================
+app/helpers/groups_helper.rb
+================================================================================
+   module GroupsHelper
+   end
+================================================================================
+app/helpers/registrations_helper.rb
+================================================================================
+   module RegistrationsHelper
+   end
+================================================================================
+app/models/subject.rb
+================================================================================
+   class Subject < ObfuscatedRecord
+     
+     attr_encrypted :name, :key => ENCRYPTED_ATTR_PASSKEY
+     attr_encrypted :email, :key => ENCRYPTED_ATTR_PASSKEY
+     attr_encrypted :phone_number, :key => ENCRYPTED_ATTR_PASSKEY
+     
+     has_many :appointments, :dependent => :destroy
+     has_many :slots, :through => :appointments, :order => :time
+     
+     before_validation :clean_phone_number
+     
+     validates :name, :presence => true,
+                      :length => {:minimum => 1, :maximum => 254}
+     
+     validates :email, :presence => true, :email => true
+     
+     validates_length_of :phone_number, :minimum => 10, :allow_blank => true, :allow_nil => true
+     
+     def clean_phone_number
+       unless self.phone_number.nil?
+        self.phone_number = self.phone_number.gsub(/[^\d]/,'')
+       end
+     end
+     
+   end
+================================================================================
+app/models/subject_observer.rb
+================================================================================
+   class SubjectObserver < ActiveRecord::Observer
+   
+   end
