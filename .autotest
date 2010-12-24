@@ -4,7 +4,6 @@
 require 'autotest/growl' # Growl Notifications
 require 'autotest/fsevent' # Use OS X's built-in file system notification api
 require 'autotest/restart'
-require 'redgreen/autotest'
 
 # Ignore VCS
 Autotest.add_hook :initialize do |autotest|

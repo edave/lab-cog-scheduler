@@ -1,4 +1,10 @@
 class Location < ObfuscatedRecord
+  
+  ###
+  ## Change location factory when revamping this!
+  ##
+  ###
+  
   has_many :experiments
   validates_presence_of :building
   validates_presence_of :room

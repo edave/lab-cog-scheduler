@@ -31,6 +31,14 @@ describe User do
     User.new.should have(1).error_on(:name)
   end
   
+  it "fails validation using a blank password (using error_on)" do
+    User.new.should have(1).error_on(:password)
+  end
+  
+  it "passes validation using a password (using error_on)" do
+    User.new(:password => "harryheartsginny").should have(:no).errors_on(:password)
+  end
+  
   it "passes validation using a name (using error_on)" do
     User.new(:name => "Harry Potter").should have(:no).errors_on(:name)
   end

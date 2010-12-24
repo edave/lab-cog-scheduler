@@ -10,13 +10,17 @@ class Experiment < ObfuscatedRecord
     acts_as_markdown :desc
     
     validates_presence_of     :name
-    validates_presence_of     :desc
+    validate :presence_of_desc
     validates_presence_of     :user
     validates_presence_of     :location
     validates_numericality_of :time_length, :only_integer => true, :greater_than => 0
     validates_numericality_of :num_subjects, :only_integer => true, :greater_than => 0
     validates_numericality_of :compensation, :only_integer => true, :greater_than => -1
     validates_numericality_of :num_subjects_per_slot, :only_integer => true, :greater_than => 0
+  
+    def presence_of_desc
+      errors.add(:desc, "is blank") if desc.to_s.blank?
+    end
   
     def open?
       self.read_attribute(:open)
