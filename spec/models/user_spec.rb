@@ -3,11 +3,11 @@ require 'spec_helper'
 describe User do
   
   before(:each) do
-    @user = Factory(:user)
+    @user = Factory.build(:user)
   end
   
   it "passes having a 10-digit phone number" do
-    @user.phone.length.should == 10
+    Factory(:next_user).phone.length.should == 10
   end
   
   it "passes validation using a blank phone number (using error_on)" do

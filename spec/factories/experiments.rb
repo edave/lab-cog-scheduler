@@ -8,8 +8,8 @@ Factory.define :experiment do |experiment|
   experiment.num_subjects 15
   experiment.num_subjects_per_slot 3
   experiment.desc "# My Title \n Lots of Lorem Ipsum! \n* Let's bulletize \n* Ya, bullets are hot typography"
-  experiment.user { Factory(:user) }
-  experiment.location { Factory(:location) }
+  experiment.user {|a| a.association(:next_user) }
+  experiment.location {|a| a.association(:next_location) }
   # Add Google Calendar
   # Add Slots?
 end

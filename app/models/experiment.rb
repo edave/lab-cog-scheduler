@@ -65,20 +65,20 @@ class Experiment < ObfuscatedRecord
      minutes = time_length - 60 * hours
      human_arry = []
      if hours > 1
-      human_arry << "#{hours} hour"
+      human_arry << "#{hours} hours"
      elsif hours == 1
-      human_arry << "1 hr"
+      human_arry << "1 hour"
     end
     if minutes > 1
       human_arry << "#{minutes} minutes"
-    elsif
+    elsif minutes == 1
       human_arry << "#{minutes} minute"
     end
      return human_arry.join(" and ")
   end
   
   def time_zone
-    return "EST"
+    return "Eastern Time (US & Canada)"
   end
   
   def can_modify?(user)

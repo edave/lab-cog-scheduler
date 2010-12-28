@@ -30,6 +30,7 @@ class Slot < ObfuscatedRecord
   end
   
   def filled?
+    return false if self.experiment.nil?
     return self.appointments.count >= self.experiment.num_subjects_per_slot
   end
   
