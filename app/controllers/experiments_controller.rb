@@ -27,7 +27,6 @@ class ExperimentsController < ApplicationController
     page_title("Experiments")
     respond_to do |format|
       format.html # index.html.erb
-      format.xml  { render :xml => @experiments }
     end
   end
   
@@ -53,7 +52,6 @@ class ExperimentsController < ApplicationController
     
     respond_to do |format|
       format.html # show.html.erb
-      format.xml  { render :xml => @experiment }
     end
   end
   
@@ -93,7 +91,6 @@ class ExperimentsController < ApplicationController
     
     respond_to do |format|
       format.html # new.html.erb
-      format.xml  { render :xml => @experiment }
     end
   end
 
@@ -130,14 +127,12 @@ class ExperimentsController < ApplicationController
       if @experiment.save
         flash[:notice] = 'Experiment was successfully created.'
         format.html { redirect_to(:controller => :experiments, :action => :show, :id => @experiment.hashed_id) }
-        format.xml  { render :xml => @experiment, :status => :created, :location => @experiment }
       else
         @calendars = self.calendars_select_array()
     @locations = self.locations_select_array()
     self.use_markdown_editor = true
     
         format.html { render :action => "new" }
-        format.xml  { render :xml => @experiment.errors, :status => :unprocessable_entity }
       end
     end
   end
@@ -160,13 +155,11 @@ class ExperimentsController < ApplicationController
       if @experiment.update_attributes(params[:experiment])
         flash[:notice] = 'Experiment was successfully updated.'
         format.html { redirect_to(@experiment) }
-        format.xml  { head :ok }
       else
       @calendars = self.calendars_select_array()
       @locations = self.locations_select_array()
       self.use_markdown_editor = true
         format.html { render :action => "edit" }
-        format.xml  { render :xml => @experiment.errors, :status => :unprocessable_entity }
       end
     end
   end
@@ -185,7 +178,6 @@ class ExperimentsController < ApplicationController
 
     respond_to do |format|
       format.html { redirect_to(experiments_url) }
-      format.xml  { head :ok }
     end
   end
   

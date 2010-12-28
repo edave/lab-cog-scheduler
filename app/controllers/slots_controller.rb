@@ -1,63 +1,6 @@
 class SlotsController < ApplicationController
   
    respond_to :html, :json, :js
-  # GET /slots
-  # GET /slots.xml
-  def index
-    @experiment = Experiment.obfuscated(params[:experiment])
-    page_group(@experiment.user.group)
-    
-    if @experiment.nil? or !@experiment.can_modify?(current_user)
-      access_denied
-      return
-    end
-    @slots = Slot.where(:experiment_id => @experiment.id).order("time")
-    page_title([@experiment.name, "Time Slots"])
-    respond_to do |format|
-      format.html # index.html.erb
-      format.xml  { render :xml => @slots }
-    end
-  end
-
-  # GET /slots/1
-  # GET /slots/1.xml
-  def show    
-    @slot = Slot.obfuscated_query(params[:id]).includes(:experiment).first
-    if @slot == nil
-      render_404
-      return
-    end
-    @experiment = @slot.experiment
-    page_group(@experiment.user.group)
-    
-    if @experiment.nil? or !@experiment.can_modify?(current_user)
-      access_denied
-      return
-    end
-    if @experiment.can_modify?(current_user)
-    page_title([@experiment.name, "Slot", @slot.human_time])
-    respond_to do |format|
-      format.html # show.html.erb
-      format.xml  { render :xml => @slot }
-    end
-    else
-      
-    end
-  end
-
-  # GET /slots/new
-  # GET /slots/new.xml
-  def new
-    page_title("New Time Slot")
-    @slot = Slot.new
-    @experiment = Experiment.obfuscated_query(params[:id]).includes(:slots).first
-    page_group(@experiment.user.group)
-    
-    respond_to do |format|
-      format.html # new.html.erb
-      format.xml  { render :xml => @slot }
-    end
-  end
 
   def cancel
     @slot = Slot.obfuscated_query(params[:id]).includes(:experiment).first
@@ -85,26 +28,6 @@ class SlotsController < ApplicationController
   end
   end
 
-  # GET /slots/1/edit
-  def edit
-    @slot = Slot.obfuscated(params[:id]).includes(:experiment)
-    if @slot.nil?
-      render_404
-      return
-    end
-    @experiment = @slot.experiment
-    page_group(@experiment.user.group)
-    
-    if @experiment.nil? or !@experiment.can_modify?(current_user)
-      access_denied
-      return
-    end
-    if @experiment.owned_by?(current_user)
-    page_title([@experiment.name, "Edit Slot", @slot.human_time])
-    else
-    redirect_to(:controller => :slots, :action => :index, :experiment=> @experiment.hashed_id)
-    end
-  end
 
   # POST /slots
   # POST /slots.xml
