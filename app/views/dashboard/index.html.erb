@@ -1,0 +1,7 @@
+<h1>Welcome back!</h1>
+
+<h2>Experiments</h2>
+<ul>
+	<%= render(:partial => '/experiments/list', :locals => {:experiments => @experiments}) %>
+</ul>
+<%= link_to 'New experiment', new_experiment_path %>
