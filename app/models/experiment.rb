@@ -40,6 +40,13 @@ class Experiment < ObfuscatedRecord
       return occupied
   end
   
+  def expired?
+    self.slots.each do |slot|
+      return false unless slot.expired?
+    end
+    return true
+  end
+  
   
   # Total number of subjects signed up
   # not including cancelled slots

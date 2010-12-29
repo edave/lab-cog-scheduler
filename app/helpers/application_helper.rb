@@ -36,4 +36,11 @@ module ApplicationHelper
     return ""
   end
   
+  def experiment_status_class(experiment)
+    return "red-status" if experiment.expired? and experiment.open?
+    return "green-status" if experiment.open?
+    return "gray-status" if !experiment.open?
+    return "yellow-status"
+  end
+  
 end

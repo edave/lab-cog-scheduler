@@ -219,7 +219,7 @@ div#sidebar ul.slots-list li span.experiment{
 }
 
 div#sidebar ul.experiment-list{
-	margin-left: 8px;
+	margin-left: 0;
 }
 div#sidebar ul.experiment-list li {
 	margin-top: 8px;
@@ -354,6 +354,24 @@ div.collapse-icon.uncollapsed{
 div.cancelled-icon, span.cancelled-icon{
 	background: transparent url(/images/icons/diagona/16/150.png) no-repeat top left;
 	cursor: default;	
+}
+
+span.status-icon, div.status-icon{
+	padding-top:0;
+	padding-left: 18px;
+}
+
+.green-status{
+	background: transparent url(/images/icons/custom/statuses.png) no-repeat 0 0;
+}
+.yellow-status{
+	background: transparent url(/images/icons/custom/statuses.png) no-repeat 0 -32px;	
+}
+.red-status{
+	background: transparent url(/images/icons/custom/statuses.png) no-repeat 0 -65px;	
+}
+.gray-status{
+	background: transparent url(/images/icons/custom/statuses.png) no-repeat 0 -98px;
 }
 
 /* jQuery UI */
