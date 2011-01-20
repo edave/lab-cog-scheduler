@@ -14,8 +14,6 @@ class Slot < ObfuscatedRecord
   scope :find_by_full, lambda { |e| where(:appointments_count => e.num_subjects_per_slot, :cancelled => false, :experiment_id => e.id).order('time') }
   scope :find_by_experiment, lambda { |e| where(:experiment_id => e).includes(:experiment)}
   
-  validate :limit_appointments
-  
   def open?
     return (!self.expired? and !self.filled?)
   end
@@ -44,15 +42,6 @@ class Slot < ObfuscatedRecord
   
   def cancel
     self.cancelled = true
-  end
-  
-  def limit_appointments
-    return false if self.experiment == nil
-    unless self.appointments.count <= self.experiment.num_subjects_per_slot
-      errors.add("slot", " is filled to capacity")
-      return false
-    end
-    return true
   end
   
   def parse_datetime(datetimeString, format='%m/%d/%y %I:%M %p')

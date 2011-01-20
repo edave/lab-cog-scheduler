@@ -1,8 +1,11 @@
 require 'spec_helper'
 
 describe Experiment do
-  before(:all) do
-     @experiment = Factory.build(:experiment)
+  
+  before(:each) do
+     @user = Factory(:next_user)
+     @location = Factory(:next_location)
+     @experiment = Factory(:experiment, :user => @user, :location => @location)
    end
 
    it "fails validation with no name (using errors_on)" do

@@ -1,15 +1,12 @@
-*******............*
+*.......*......................****FFFFFFFF.....................
 
 Pending:
-  Appointment add some examples to (or delete) ./spec/models/appointment_spec.rb
+  DashboardHelper add some examples to (or delete) ./spec/helpers/dashboard_helper_spec.rb
     # Not Yet Implemented
-    # ./spec/models/appointment_spec.rb:4
+    # ./spec/helpers/dashboard_helper_spec.rb:14
   ConsumerToken add some examples to (or delete) ./spec/models/consumer_token_spec.rb
     # Not Yet Implemented
     # ./spec/models/consumer_token_spec.rb:4
-  Experiment add some examples to (or delete) ./spec/models/experiment_spec.rb
-    # Not Yet Implemented
-    # ./spec/models/experiment_spec.rb:4
   GoogleCalendar add some examples to (or delete) ./spec/models/google_calendar_spec.rb
     # Not Yet Implemented
     # ./spec/models/google_calendar_spec.rb:4
@@ -22,75 +19,65 @@ Pending:
   Role add some examples to (or delete) ./spec/models/role_spec.rb
     # Not Yet Implemented
     # ./spec/models/role_spec.rb:4
-  User add some examples to (or delete) ./spec/models/user_spec.rb
-    # Not Yet Implemented
-    # ./spec/models/user_spec.rb:4
 
-Finished in 0.31495 seconds
-20 examples, 0 failures, 8 pending
+Failures:
+
+  1) Slot should not have a time when new
+     Failure/Error: @slot = Factory(:slot)
+     Validation failed: User can't be blank, Location can't be blank
+     # ./spec/factories/slots.rb:14
+     # ./spec/models/slot_spec.rb:7
+
+  2) Slot should not be cancelled when new
+     Failure/Error: @slot = Factory(:slot)
+     Validation failed: User can't be blank, Location can't be blank
+     # ./spec/factories/slots.rb:14
+     # ./spec/models/slot_spec.rb:7
+
+  3) Slot fails validation with no experiment (using errors_on)
+     Failure/Error: @slot = Factory(:slot)
+     Validation failed: User can't be blank, Location can't be blank
+     # ./spec/factories/slots.rb:14
+     # ./spec/models/slot_spec.rb:7
+
+  4) Slot fails validation with no time (using errors_on)
+     Failure/Error: @slot = Factory(:slot)
+     Validation failed: User can't be blank, Location can't be blank
+     # ./spec/factories/slots.rb:14
+     # ./spec/models/slot_spec.rb:7
+
+  5) Slot passes validation with experiment
+     Failure/Error: @slot = Factory(:slot)
+     Validation failed: User can't be blank, Location can't be blank
+     # ./spec/factories/slots.rb:14
+     # ./spec/models/slot_spec.rb:7
+
+  6) Slot passes validation with time
+     Failure/Error: @slot = Factory(:slot)
+     Validation failed: User can't be blank, Location can't be blank
+     # ./spec/factories/slots.rb:14
+     # ./spec/models/slot_spec.rb:7
+
+  7) Slot should not be occupied when new
+     Failure/Error: @slot = Factory(:slot)
+     Validation failed: User can't be blank, Location can't be blank
+     # ./spec/factories/slots.rb:14
+     # ./spec/models/slot_spec.rb:7
+
+  8) Slot should not be filled when new or empty
+     Failure/Error: @slot = Factory(:slot)
+     Validation failed: User can't be blank, Location can't be blank
+     # ./spec/factories/slots.rb:14
+     # ./spec/models/slot_spec.rb:7
+
+Finished in 11.64 seconds
+64 examples, 8 failures, 6 pending
 ================================================================================
 app/controllers/slots_controller.rb
 ================================================================================
    class SlotsController < ApplicationController
      
       respond_to :html, :json, :js
-     # GET /slots
-     # GET /slots.xml
-     def index
-!!     @experiment = Experiment.obfuscated(params[:experiment])
-!!     page_group(@experiment.user.group)
-!!     
-!!     if @experiment.nil? or !@experiment.can_modify?(current_user)
-!!       access_denied
-!!       return
-!!     end
-!!     @slots = Slot.where(:experiment_id => @experiment.id).order("time")
-!!     page_title([@experiment.name, "Time Slots"])
-!!     respond_to do |format|
-!!       format.html # index.html.erb
-!!       format.xml  { render :xml => @slots }
-!!     end
-!!   end
-   
-     # GET /slots/1
-     # GET /slots/1.xml
-     def show    
-!!     @slot = Slot.obfuscated_query(params[:id]).includes(:experiment).first
-!!     if @slot == nil
-!!       render_404
-!!       return
-!!     end
-!!     @experiment = @slot.experiment
-!!     page_group(@experiment.user.group)
-!!     
-!!     if @experiment.nil? or !@experiment.can_modify?(current_user)
-!!       access_denied
-!!       return
-!!     end
-!!     if @experiment.can_modify?(current_user)
-!!     page_title([@experiment.name, "Slot", @slot.human_time])
-!!     respond_to do |format|
-!!       format.html # show.html.erb
-!!       format.xml  { render :xml => @slot }
-!!     end
-!!     else
-!!       
-!!     end
-!!   end
-   
-     # GET /slots/new
-     # GET /slots/new.xml
-     def new
-!!     page_title("New Time Slot")
-!!     @slot = Slot.new
-!!     @experiment = Experiment.obfuscated_query(params[:id]).includes(:slots).first
-!!     page_group(@experiment.user.group)
-!!     
-!!     respond_to do |format|
-!!       format.html # new.html.erb
-!!       format.xml  { render :xml => @slot }
-!!     end
-!!   end
    
      def cancel
 !!     @slot = Slot.obfuscated_query(params[:id]).includes(:experiment).first
@@ -118,26 +105,6 @@ app/controllers/slots_controller.rb
 !!   end
 !!   end
    
-     # GET /slots/1/edit
-     def edit
-!!     @slot = Slot.obfuscated(params[:id]).includes(:experiment)
-!!     if @slot.nil?
-!!       render_404
-!!       return
-!!     end
-!!     @experiment = @slot.experiment
-!!     page_group(@experiment.user.group)
-!!     
-!!     if @experiment.nil? or !@experiment.can_modify?(current_user)
-!!       access_denied
-!!       return
-!!     end
-!!     if @experiment.owned_by?(current_user)
-!!     page_title([@experiment.name, "Edit Slot", @slot.human_time])
-!!     else
-!!     redirect_to(:controller => :slots, :action => :index, :experiment=> @experiment.hashed_id)
-!!     end
-!!   end
    
      # POST /slots
      # POST /slots.xml
@@ -777,7 +744,6 @@ app/controllers/experiments_controller.rb
 !!     page_title("Experiments")
 !!     respond_to do |format|
 !!       format.html # index.html.erb
-!!       format.xml  { render :xml => @experiments }
 !!     end
 !!   end
      
@@ -803,7 +769,6 @@ app/controllers/experiments_controller.rb
 !!     
 !!     respond_to do |format|
 !!       format.html # show.html.erb
-!!       format.xml  { render :xml => @experiment }
 !!     end
 !!   end
      
@@ -843,7 +808,6 @@ app/controllers/experiments_controller.rb
 !!     
 !!     respond_to do |format|
 !!       format.html # new.html.erb
-!!       format.xml  { render :xml => @experiment }
 !!     end
 !!   end
    
@@ -880,14 +844,12 @@ app/controllers/experiments_controller.rb
 !!       if @experiment.save
 !!         flash[:notice] = 'Experiment was successfully created.'
 !!         format.html { redirect_to(:controller => :experiments, :action => :show, :id => @experiment.hashed_id) }
-!!         format.xml  { render :xml => @experiment, :status => :created, :location => @experiment }
 !!       else
 !!         @calendars = self.calendars_select_array()
 !!     @locations = self.locations_select_array()
 !!     self.use_markdown_editor = true
 !!     
 !!         format.html { render :action => "new" }
-!!         format.xml  { render :xml => @experiment.errors, :status => :unprocessable_entity }
 !!       end
 !!     end
 !!   end
@@ -910,13 +872,11 @@ app/controllers/experiments_controller.rb
 !!       if @experiment.update_attributes(params[:experiment])
 !!         flash[:notice] = 'Experiment was successfully updated.'
 !!         format.html { redirect_to(@experiment) }
-!!         format.xml  { head :ok }
 !!       else
 !!       @calendars = self.calendars_select_array()
 !!       @locations = self.locations_select_array()
 !!       self.use_markdown_editor = true
 !!         format.html { render :action => "edit" }
-!!         format.xml  { render :xml => @experiment.errors, :status => :unprocessable_entity }
 !!       end
 !!     end
 !!   end
@@ -935,7 +895,6 @@ app/controllers/experiments_controller.rb
 !! 
 !!     respond_to do |format|
 !!       format.html { redirect_to(experiments_url) }
-!!       format.xml  { head :ok }
 !!     end
 !!   end
      
@@ -1368,6 +1327,13 @@ app/helpers/application_helper.rb
 !!     end
 !!     return ""
 !!   end
+     
+     def experiment_status_class(experiment)
+!!     return "red-status" if experiment.expired? and experiment.open?
+!!     return "green-status" if experiment.open?
+!!     return "gray-status" if !experiment.open?
+!!     return "yellow-status"
+!!   end
 !!   
 !! end
 ================================================================================
@@ -1473,37 +1439,6 @@ app/controllers/application_controller.rb
 !! 
 !! end
 ================================================================================
-app/models/experiment_sweeper.rb
-================================================================================
-    class ExperimentSweeper < ActionController::Caching::Sweeper
-       observe Experiment, Slot, Appointment
-   
-       def after_create(record)
-!!       expire_cache(record)
-!!     end
-   
-       def after_save(record)
-!!       expire_cache(record)
-!!     end
-       
-       def after_destroy(record)
-!!       expire_cache(record)
-!!     end
-       
-       def expire_cache(record)
-!!       
-!!       experiment = record.is_a?(Experiment) ? record : record.experiment
-!!       # Pages
-!!       expire_page(:controller => "home", :action => "index")
-!!       
-!!       # Action
-!!       expire_action(:controller => "experiments", :action => %w( show participate ), :id => experiment.hashed_id)
-!!       expire_action(:controller => "subjects", :action => "new", :id => experiment.hashed_id)
-!!       expire_action(:controller => "experiments", :action => "index")
-!!     
-!!     end
-!!   end
-================================================================================
 app/models/experiment_notifier.rb
 ================================================================================
    class ExperimentNotifier < ActionMailer::Base
@@ -1527,90 +1462,12 @@ app/models/experiment_notifier.rb
 !!     end
 !! end
 ================================================================================
-app/models/experiment.rb
+app/controllers/preview_controller.rb
 ================================================================================
-   class Experiment < ObfuscatedRecord
-       belongs_to :user
-       belongs_to :google_calendar
-       belongs_to :location
-       has_many :slots, :order => :time, :dependent => :destroy
-       
-       # ACL9 authorization support
-       acts_as_authorization_object
-       
-       acts_as_markdown :desc
-       
-       validates_presence_of     :name
-       validates_presence_of     :desc
-       validates_presence_of     :user
-       validates_presence_of     :location
-       validates_numericality_of :time_length, :only_integer => true, :greater_than => 0
-       validates_numericality_of :num_subjects, :only_integer => true, :greater_than => 0
-       validates_numericality_of :compensation, :only_integer => true, :greater_than => -1
-       validates_numericality_of :num_subjects_per_slot, :only_integer => true, :greater_than => 0
+   class PreviewController < ApplicationController
      
-       def open?
-!!       self.read_attribute(:open)
-!!     end
-      
-       def is_occupied(day)
-!!       occupied = occupied_slots(day)
-!!       return !occupied.empty?
-!!     end
-       
-       def occupied_slots(day)
-!!       occupied = Array.new
-!!       slots = Slot.find_by_experiment(self.id).find_by_day(day)
-!!       slots.each do |slot|
-!!         occupied << slot if slot.occupied?
-!!       end
-!!       return occupied
-!!   end
-     
-     
-     # Total number of subjects signed up
-     # not including cancelled slots
-     def subjects_count
-!!     subject_count = 0
-!!     self.slots.each do |slot|
-!!       subject_count += slot.subjects.count unless slot.cancelled?
-!!     end
-!!     return subject_count
-!!   end
-   
-     def filled?
-!!     return subjects_count >= self.num_subjects
-!!   end
-     
-      def owned_by?(user)
-!!       return user.id == self.user_id
-!!   end
-     
-     def human_time_length
-!!      return "---" if time_length <= 0 
-!!      hours = time_length.minutes / 1.hours
-!!      minutes = time_length - 60 * hours
-!!      human_arry = []
-!!      if hours > 1
-!!       human_arry << "#{hours} hour"
-!!      elsif hours == 1
-!!       human_arry << "1 hr"
-!!     end
-!!     if minutes > 1
-!!       human_arry << "#{minutes} minutes"
-!!     elsif
-!!       human_arry << "#{minutes} minute"
-!!     end
-!!      return human_arry.join(" and ")
-!!   end
-     
-     def time_zone
-!!     return "EST"
-!!   end
-     
-     def can_modify?(user)
-!!     return false if user == :false || user == nil
-!!     return (user.id == self.user_id) || user.has_role?(:admin)
+     def markdown
+!!     render :layout => false
 !!   end
 !! end
 ================================================================================
@@ -1649,12 +1506,22 @@ lib/custom_validations.rb
      include CustomValidations
    end
 ================================================================================
-app/controllers/preview_controller.rb
+app/models/obfuscated_record.rb
 ================================================================================
-   class PreviewController < ApplicationController
+   class ObfuscatedRecord < ActiveRecord::Base
+     self.abstract_class = true
+     has_hashed_id
      
-     def markdown
-!!     render :layout => false
+     def self.obfuscated(hashed_id)
+!!     obfuscated_query(hashed_id).first
+!!   end
+     
+     def self.obfuscated_query(hashed_id)
+!!     where(:hashed_id => hashed_id)
+!!   end
+     
+     def self.find_by_obfuscated_query!(hashed_id)
+!!     where(:hashed_id => hashed_id)
 !!   end
 !! end
 ================================================================================
@@ -1696,10 +1563,10 @@ app/models/user.rb
      #validates_length_of :phone, :minimum => 10, :allow_blank => true, :allow_nil => true
      
      def clean_phone
-!!     unless self.phone.nil?
-!!      self.phone = self.phone.gsub(/[^\d]/,'')
-!!     end
-!!   end
+       unless self.phone.nil?
+        self.phone = self.phone.gsub(/[^\d]/,'')
+       end
+     end
      
      # has_role? simply needs to return true or false whether a user has a role or not.  
      #def has_role?(role_sym)
@@ -1759,25 +1626,6 @@ app/models/user.rb
 !!     end
 !! end
 ================================================================================
-app/models/obfuscated_record.rb
-================================================================================
-   class ObfuscatedRecord < ActiveRecord::Base
-     self.abstract_class = true
-     has_hashed_id
-     
-     def self.obfuscated(hashed_id)
-!!     obfuscated_query(hashed_id).first
-!!   end
-     
-     def self.obfuscated_query(hashed_id)
-!!     where(:hashed_id => hashed_id)
-!!   end
-     
-     def self.find_by_obfuscated_query!(hashed_id)
-!!     where(:hashed_id => hashed_id)
-!!   end
-!! end
-================================================================================
 app/models/group.rb
 ================================================================================
    class Group < ObfuscatedRecord
@@ -1801,6 +1649,33 @@ app/models/group.rb
 !!     end
 !!     return open_exps
 !!   end
+!! end
+================================================================================
+app/models/location.rb
+================================================================================
+   class Location < ObfuscatedRecord
+     
+     ###
+     ## Change location factory when revamping this!
+     ##
+     ###
+     
+     has_many :experiments
+     validates_presence_of :building
+     validates_presence_of :room
+     validates_uniqueness_of :room, :scope => :building
+     
+     # ACL9 authorization support
+     acts_as_authorization_object
+     
+     def url
+!!     return "http://whereis.mit.edu/?selection=#{building}&zoom=16"
+!!   end
+     
+     def human_location
+!!     return "Building #{building}-#{room}"
+!!   end
+!!   
 !! end
 ================================================================================
 app/models/slot.rb
@@ -1837,6 +1712,7 @@ app/models/slot.rb
 !!   end
      
      def filled?
+!!     return false if self.experiment.nil?
 !!     return self.appointments.count >= self.experiment.num_subjects_per_slot
 !!   end
      
@@ -1853,13 +1729,13 @@ app/models/slot.rb
 !!   end
      
      def limit_appointments
-!!     return false if self.experiment == nil
-!!     unless self.appointments.count <= self.experiment.num_subjects_per_slot
+       return false if self.experiment == nil
+       unless self.appointments.count <= self.experiment.num_subjects_per_slot
 !!       errors.add("slot", " is filled to capacity")
 !!       return false
 !!     end
-!!     return true
-!!   end
+       return true
+     end
      
      def parse_datetime(datetimeString, format='%m/%d/%y %I:%M %p')
        begin
@@ -1910,25 +1786,118 @@ app/models/slot.rb
 !!   
 !! end
 ================================================================================
-app/models/location.rb
+app/controllers/dashboard_controller.rb
 ================================================================================
-   class Location < ObfuscatedRecord
-     has_many :experiments
-     validates_presence_of :building
-     validates_presence_of :room
-     validates_uniqueness_of :room, :scope => :building
+   class DashboardController < ApplicationController
+     before_filter :authenticate_user!
      
-     # ACL9 authorization support
-     acts_as_authorization_object
-     
-     def url
-!!     return "http://whereis.mit.edu/?selection=#{building}&zoom=16"
+     def index
+!!      @experiments = Experiment.where(:user_id => current_user.id)
+!!      page_title("Your Dashboard")
 !!   end
      
-     def human_location
-!!     return "Building #{building}-#{room}"
+     def upcoming
+        
+     end
+     
+   end
+================================================================================
+app/models/experiment.rb
+================================================================================
+   class Experiment < ObfuscatedRecord
+       belongs_to :user
+       belongs_to :google_calendar
+       belongs_to :location
+       has_many :slots, :order => :time, :dependent => :destroy
+       
+       # ACL9 authorization support
+       acts_as_authorization_object
+       
+       acts_as_markdown :desc
+       
+       validates_presence_of     :name
+       validate :presence_of_desc
+       validates_presence_of     :user
+       validates_presence_of     :location
+       validates_numericality_of :time_length, :only_integer => true, :greater_than => 0
+       validates_numericality_of :num_subjects, :only_integer => true, :greater_than => 0
+       validates_numericality_of :compensation, :only_integer => true, :greater_than => -1
+       validates_numericality_of :num_subjects_per_slot, :only_integer => true, :greater_than => 0
+     
+       def presence_of_desc
+         errors.add(:desc, "is blank") if desc.to_s.blank?
+       end
+     
+       def open?
+         self.read_attribute(:open)
+       end
+      
+       def is_occupied(day)
+!!       occupied = occupied_slots(day)
+!!       return !occupied.empty?
+!!     end
+       
+       def occupied_slots(day)
+!!       occupied = Array.new
+!!       slots = Slot.find_by_experiment(self.id).find_by_day(day)
+!!       slots.each do |slot|
+!!         occupied << slot if slot.occupied?
+!!       end
+!!       return occupied
 !!   end
-!!   
+     
+     def expired?
+!!     self.slots.each do |slot|
+!!       return false unless slot.expired?
+!!     end
+!!     return true
+!!   end
+     
+     
+     # Total number of subjects signed up
+     # not including cancelled slots
+     def subjects_count
+       subject_count = 0
+       self.slots.each do |slot|
+!!       subject_count += slot.subjects.count unless slot.cancelled?
+!!     end
+       return subject_count
+     end
+   
+     def filled?
+!!     return subjects_count >= self.num_subjects
+!!   end
+     
+      def owned_by?(user)
+!!       return user.id == self.user_id
+!!   end
+     
+     def human_time_length
+        return "---" if time_length <= 0 
+        hours = time_length.minutes / 1.hours
+        minutes = time_length - 60 * hours
+        human_arry = []
+        if hours > 1
+         human_arry << "#{hours} hours"
+        elsif hours == 1
+         human_arry << "1 hour"
+       end
+       if minutes > 1
+         human_arry << "#{minutes} minutes"
+       elsif minutes == 1
+         human_arry << "#{minutes} minute"
+       end
+        return human_arry.join(" and ")
+     end
+     
+     def time_zone
+       return "Eastern Time (US & Canada)"
+     end
+     
+     def can_modify?(user)
+!!     return false if user == :false || user == nil
+!!     return (user.id == self.user_id) || user.has_role?(:admin)
+!!   end
 !! end
 ================================================================================
 app/controllers/home_controller.rb
@@ -2042,28 +2011,63 @@ lib/hashed_id.rb
      include HashedId
    end
 ================================================================================
+app/models/experiment_sweeper.rb
+================================================================================
+    class ExperimentSweeper < ActionController::Caching::Sweeper
+       observe Experiment, Slot, Appointment
+   
+       def after_create(record)
+         expire_cache(record)
+       end
+   
+       def after_save(record)
+         expire_cache(record)
+       end
+       
+       def after_destroy(record)
+!!       expire_cache(record)
+!!     end
+       
+       def expire_cache(record)
+         
+         experiment = record.is_a?(Experiment) ? record : record.experiment
+         # Pages
+         expire_page(:controller => "home", :action => "index")
+         
+         # Action
+         expire_action(:controller => "experiments", :action => %w( show participate ), :id => experiment.hashed_id)
+         expire_action(:controller => "subjects", :action => "new", :id => experiment.hashed_id)
+         expire_action(:controller => "experiments", :action => "index")
+       
+       end
+     end
+================================================================================
 app/models/appointment.rb
 ================================================================================
    class Appointment < ActiveRecord::Base
      belongs_to :slot, :counter_cache => true
      belongs_to :subject, :counter_cache => true, :dependent => :destroy
      has_one :experiment, :through => :slot
-     validates_uniqueness_of :subject_id, :scope => [:slot_id]
+     
+     validates :slot_id, :presence => true
+     validates :subject_id, :presence => true
+     
+     validates_uniqueness_of :subject_id, :scope => :slot_id
    
      # ACL9 authorization support
      acts_as_authorization_object
    
    end
 ================================================================================
-app/helpers/sessions_helper.rb
-================================================================================
-   module SessionsHelper
-   end
-================================================================================
 app/models/role.rb
 ================================================================================
    class Role < ActiveRecord::Base
      acts_as_authorization_role # Implements ACL9's roles
+   end
+================================================================================
+app/helpers/sessions_helper.rb
+================================================================================
+   module SessionsHelper
    end
 ================================================================================
 app/helpers/experiments_helper.rb
@@ -2095,6 +2099,202 @@ app/helpers/locations_helper.rb
 app/helpers/preview_helper.rb
 ================================================================================
    module PreviewHelper
+   end
+================================================================================
+app/helpers/dashboard_helper.rb
+================================================================================
+   module DashboardHelper
+   end
+================================================================================
+db/schema.rb
+================================================================================
+   # This file is auto-generated from the current state of the database. Instead
+   # of editing this file, please use the migrations feature of Active Record to
+   # incrementally modify your database, and then regenerate this schema definition.
+   #
+   # Note that this schema.rb definition is the authoritative source for your
+   # database schema. If you need to create the application database on another
+   # system, you should be using db:schema:load, not running all the migrations
+   # from scratch. The latter is a flawed and unsustainable approach (the more migrations
+   # you'll amass, the slower it'll run and the greater likelihood for issues).
+   #
+   # It's strongly recommended to check this file into your version control system.
+   
+   ActiveRecord::Schema.define(:version => 20101210223040) do
+   
+     create_table "appointments", :force => true do |t|
+       t.integer  "subject_id"
+       t.integer  "slot_id"
+       t.boolean  "scheduled_in_background", :default => false
+       t.datetime "created_at"
+       t.datetime "updated_at"
+     end
+   
+     add_index "appointments", ["slot_id"], :name => "index_appointments_on_slot_id"
+     add_index "appointments", ["subject_id"], :name => "index_appointments_on_subject_id"
+   
+     create_table "consumer_tokens", :force => true do |t|
+       t.integer  "user_id"
+       t.string   "type",       :limit => 30
+       t.string   "token",      :limit => 1024
+       t.string   "secret"
+       t.datetime "created_at"
+       t.datetime "updated_at"
+     end
+   
+     add_index "consumer_tokens", ["token"], :name => "index_consumer_tokens_on_token", :length => {"token"=>"255"}
+   
+     create_table "experiments", :force => true do |t|
+       t.string   "name",                  :limit => 256
+       t.binary   "desc"
+       t.integer  "hashed_id",                            :default => 0
+       t.integer  "time_length"
+       t.integer  "user_id",                              :default => 0
+       t.integer  "location_id",                          :default => 0
+       t.integer  "slot_close_time",                      :default => 0
+       t.integer  "num_subjects",                         :default => 0
+       t.integer  "compensation",                         :default => 0
+       t.boolean  "open",                                 :default => false
+       t.datetime "created_at"
+       t.datetime "updated_at"
+       t.integer  "lock_version",                         :default => 0
+       t.integer  "google_calendar_id"
+       t.integer  "num_subjects_per_slot",                :default => 1
+     end
+   
+     add_index "experiments", ["hashed_id"], :name => "index_experiments_on_hashed_id"
+     add_index "experiments", ["open"], :name => "index_experiments_on_open"
+     add_index "experiments", ["user_id"], :name => "index_experiments_on_user_id"
+   
+     create_table "google_calendars", :force => true do |t|
+       t.string   "calendar_id"
+       t.string   "name"
+       t.integer  "hashed_id",    :default => 0
+       t.integer  "lock_version", :default => 0
+       t.datetime "created_at"
+       t.datetime "updated_at"
+       t.integer  "user_id"
+     end
+   
+     add_index "google_calendars", ["hashed_id"], :name => "index_google_calendars_on_hashed_id"
+     add_index "google_calendars", ["user_id"], :name => "index_google_calendars_on_user_id"
+   
+     create_table "groups", :force => true do |t|
+       t.integer  "owner_id",        :default => 0
+       t.string   "name"
+       t.string   "url"
+       t.string   "logo_file_name"
+       t.string   "logo_file_type"
+       t.integer  "logo_file_size"
+       t.datetime "logo_updated_at"
+       t.integer  "hashed_id",       :default => 0
+       t.integer  "lock_version",    :default => 0
+       t.datetime "created_at"
+       t.datetime "updated_at"
+     end
+   
+     add_index "groups", ["hashed_id"], :name => "index_groups_on_hashed_id"
+     add_index "groups", ["owner_id"], :name => "index_groups_on_owner_id"
+   
+     create_table "locations", :force => true do |t|
+       t.string   "building"
+       t.string   "room"
+       t.string   "directions"
+       t.integer  "hashed_id",    :default => 0
+       t.integer  "lock_version", :default => 0
+       t.datetime "created_at"
+       t.datetime "updated_at"
+     end
+   
+     add_index "locations", ["hashed_id"], :name => "index_locations_on_hashed_id"
+   
+     create_table "roles", :force => true do |t|
+       t.string   "name",              :limit => 40
+       t.string   "authorizable_type", :limit => 40
+       t.integer  "authorizable_id"
+       t.datetime "created_at"
+       t.datetime "updated_at"
+     end
+   
+     create_table "roles_users", :id => false, :force => true do |t|
+       t.integer  "user_id"
+       t.integer  "role_id"
+       t.datetime "created_at"
+       t.datetime "updated_at"
+     end
+   
+     create_table "slots", :force => true do |t|
+       t.integer  "experiment_id"
+       t.datetime "time"
+       t.integer  "hashed_id",          :default => 0
+       t.boolean  "cancelled",          :default => false
+       t.datetime "created_at"
+       t.datetime "updated_at"
+       t.integer  "lock_version",       :default => 0
+       t.integer  "subjects_count",     :default => 0
+       t.integer  "appointments_count", :default => 0
+     end
+   
+     add_index "slots", ["experiment_id"], :name => "index_slots_on_experiment_id"
+     add_index "slots", ["hashed_id"], :name => "index_slots_on_hashed_id"
+     add_index "slots", ["time"], :name => "index_slots_on_time"
+   
+     create_table "slots_subjects", :id => false, :force => true do |t|
+       t.integer "subject_id"
+       t.integer "slot_id"
+     end
+   
+     add_index "slots_subjects", ["slot_id"], :name => "index_slots_subjects_on_slot_id"
+     add_index "slots_subjects", ["subject_id"], :name => "index_slots_subjects_on_subject_id"
+   
+     create_table "subjects", :force => true do |t|
+       t.string   "encrypted_email"
+       t.string   "encrypted_name"
+       t.string   "encrypted_phone_number"
+       t.integer  "hashed_id",              :default => 0
+       t.datetime "created_at"
+       t.datetime "updated_at"
+       t.integer  "lock_version",           :default => 0
+       t.integer  "appointments_count",     :default => 0
+     end
+   
+     add_index "subjects", ["hashed_id"], :name => "index_subjects_on_hashed_id"
+   
+     create_table "users", :force => true do |t|
+       t.integer  "hashed_id",                           :default => 0
+       t.string   "name",                 :limit => 100
+       t.string   "phone",                :limit => 20
+       t.string   "user_name",            :limit => 40
+       t.string   "email",                               :default => "", :null => false
+       t.string   "encrypted_password",   :limit => 128, :default => "", :null => false
+       t.string   "password_salt",                       :default => "", :null => false
+       t.string   "reset_password_token"
+       t.string   "remember_token"
+       t.datetime "remember_created_at"
+       t.integer  "sign_in_count",                       :default => 0
+       t.datetime "current_sign_in_at"
+       t.datetime "last_sign_in_at"
+       t.string   "current_sign_in_ip"
+       t.string   "last_sign_in_ip"
+       t.string   "confirmation_token"
+       t.datetime "confirmed_at"
+       t.datetime "confirmation_sent_at"
+       t.integer  "failed_attempts",                     :default => 0
+       t.string   "unlock_token"
+       t.datetime "locked_at"
+       t.string   "authentication_token"
+       t.datetime "created_at"
+       t.datetime "updated_at"
+       t.integer  "group_id",                            :default => 0
+     end
+   
+     add_index "users", ["confirmation_token"], :name => "index_users_on_confirmation_token", :unique => true
+     add_index "users", ["email"], :name => "index_users_on_email", :unique => true
+     add_index "users", ["hashed_id"], :name => "index_users_on_hashed_id", :unique => true
+     add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
+     add_index "users", ["unlock_token"], :name => "index_users_on_unlock_token", :unique => true
+     add_index "users", ["user_name"], :name => "index_users_on_user_name", :unique => true
+   
    end
 ================================================================================
 app/helpers/groups_helper.rb

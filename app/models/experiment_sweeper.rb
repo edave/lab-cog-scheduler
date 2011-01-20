@@ -1,5 +1,5 @@
  class ExperimentSweeper < ActionController::Caching::Sweeper
-    observe Experiment, Slot, Appointment
+    #observe Experiment, Slot, Appointment
 
     def after_create(record)
       expire_cache(record)

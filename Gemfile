@@ -22,6 +22,9 @@ gem "edave-portablecontacts"
 gem "oauth-plugin", ">=0.4.0.pre1"
 gem 'edave-gcal4ruby'
 
+# For In-place-editing
+gem 'best_in_place'
+
 
 # For Rooster
 gem 'daemons', '1.1.0'
@@ -50,6 +53,10 @@ group :development, :test do
   # Server
   gem 'mongrel'
 
+  # Use Memory Database for testing
+  gem 'sqlite3-ruby'
+  gem 'memory_test_fix', ">=0.2.0"
+
   # Add in missing generators
   gem "rails3-generators"
  
@@ -58,7 +65,8 @@ group :development, :test do
 
   # Testing Framework
   gem "rspec-rails", ">= 2.3.1"
-  gem 'factory_girl_rails'
+  gem 'factory_girl_rails', ">=1.1.beta1"
+  gem 'faker', ">=0.9.4"
 
   # Time shifting for testing
   gem "timecop"

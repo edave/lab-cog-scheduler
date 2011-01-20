@@ -13,7 +13,7 @@ Factory.define :location do |f|
   f.room "220"
 end
 
-Factory.define :next_location do |f|
+Factory.define :next_location, :parent => :location do |f|
   f.building { Factory.next :building }
   f.room { Factory.next :room }
 end

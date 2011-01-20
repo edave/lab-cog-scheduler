@@ -6,6 +6,6 @@
       g.marker_font_size = "10px"
 
         g.title = 'Rails Best Practices: design problems';
-        g.data('rails_best_practices', [108]);
-        g.labels = {"0":"12/19"};
+        g.data('rails_best_practices', [108,100]);
+        g.labels = {"0":"12/19","1":"1/13"};
         g.draw();

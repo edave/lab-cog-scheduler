@@ -9,22 +9,21 @@
    expired_slots = slots.select{|slot| slot.expired? }
 %>
 <div>
-<div class="title" style="float:left; margin-right: 6px">Past</div><input type="checkbox" class="toggle" autocomplete="off" id="expired-slots-toggle" data-unchecked-label ="Hide" data-checked-label="Show" style="float:left" <% if expired_slots.empty? %>disabled='true'<% end %>/>
+<div class="title" style="float:left; margin-right: 6px">Past</div><input type="checkbox" class="toggle" autocomplete="off" id="expired-slots-toggle" data-unchecked-label ="Hide" data-checked-label="Show" style="float:left" <% if expired_slots.empty? %>disabled='true'<% end %> <% if expired_slots.length > 0 and open_slots.length <= 0 %>checked=checked<% end %> />
 	</div>
 	<br style="clear:both" />
 <table id="slots">
-
 <thead>
 	
 </thead>
 <tbody class="expired" style="display:none">
 <% expired_slots.each do |slot| %>
 	  <%= render(:partial => "slots/show", :locals => {:slot => slot})%>
-	<% end %>
+<% end %>
 </tbody>
 <tbody class="open">
 <% open_slots.each do |slot| %>
-  <%= render(:partial => "slots/show", :locals => {:slot => slot})%>
+  	<%= render(:partial => "slots/show", :locals => {:slot => slot})%>
 <% end %>
 </tbody>
 </table>

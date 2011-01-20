@@ -6,7 +6,7 @@
       g.marker_font_size = "10px"
 
         g.title = 'Flog: code complexity';
-        g.data('average', [12.9740830191815]);
-        g.data('top 5% average', [60.712698054413])
-        g.labels = {"0":"12/19"};
+        g.data('average', [12.9740830191815,12.3245675189144]);
+        g.data('top 5% average', [60.712698054413,60.4803174129807])
+        g.labels = {"0":"12/19","1":"1/13"};
         g.draw();

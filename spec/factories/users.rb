@@ -1,7 +1,7 @@
 # Read about factories at http://github.com/thoughtbot/factory_girl
 Factory.sequence :email do |n|
   u = "user-email-#{n}@example.com"
-  puts u
+  #puts u
   u
 end
 
