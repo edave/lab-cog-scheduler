@@ -314,8 +314,8 @@ div.icon, span.icon{
 	cursor: pointer;
 }
 span.icon{
-	padding-left:16px;
 	padding-top:2px;
+	display:inline-block;
 }
 div.disabled,span.disabled{
 	opacity:0.5;
