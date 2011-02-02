@@ -9,7 +9,8 @@ if (!window.console){
 }
 
 var labcog = {
-	sch: { exists:true }
+	sch: { exists: true },
+	tools: { exists: true}
 };
 
 $.ajaxSetup({
@@ -87,7 +88,7 @@ $('[data-collapse-element-id]').live('click', function(e){
 
 $('[data-destroy-url]').live('click', function(e){
 	var element = $(this);
-	var mapping = eval(element.attr("data-labcog-mapping"));
+	var mapping = labcog.tools.getVariableFromString(element.attr("data-labcog-mapping"));
 	var dialog = $("div#" + mapping.dialog);
 	dialog.dialog('option', 'title', element.attr("data-destroy-title"));
 	dialog.dialog("option", 
@@ -148,6 +149,27 @@ labcog.sch.updateSlotsFlavorText = function(){
 		$('#no-slots-tag').hide();
 	}
 };
+
+// From http://stackoverflow.com/questions/359788/javascript-function-name-as-a-string
+labcog.tools.executeFunctionByName = function (functionName, context /*, args */) {
+    var args = Array.prototype.slice.call(arguments, 2);
+    var namespaces = functionName.split(".");
+    var func = namespaces.pop();
+    for (var i = 0; i < namespaces.length; i++) {
+        context = context[namespaces[i]];
+    }
+    return context[func].apply(context, args);
+}
+
+labcog.tools.getVariableFromString = function (variableName, context) {
+    var args = Array.prototype.slice.call(arguments, 2);
+    var namespaces = variableName.split(".");
+    var func = namespaces.pop();
+    for (var i = 0; i < namespaces.length; i++) {
+        context = context[namespaces[i]];
+    }
+    return context[func];
+}
 
 function passwordHelper(passwordElement, confirmElement, username){
 	var validationElements = new Array();

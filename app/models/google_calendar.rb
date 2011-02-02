@@ -16,7 +16,7 @@ class GoogleCalendar < ObfuscatedRecord
   def self.calendars(accesstoken)
     service = self.get_service(accesstoken)
     unless service == nil
-      return service.calendars
+        return service.calendars({:fields => ['id','title']})
     end
   end
   
@@ -92,7 +92,7 @@ class GoogleCalendar < ObfuscatedRecord
   end
   
   def self.get_service(accesstoken)
-    service = GCal4Ruby::Service.new({:use_ssl => true, :check_public => false, :debug => false}, :OAuthService)
+    service = GCal4Ruby::Service.new({:use_ssl => true, :check_public => false, :debug => false, :GData4RubyService => :OAuthService})
     service.authenticate({:access_token=>accesstoken}) 
     return service
   end

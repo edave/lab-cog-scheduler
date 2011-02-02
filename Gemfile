@@ -20,7 +20,7 @@ gem 'mail_style', '>= 0.1.6'
 # For google calendar
 gem "edave-portablecontacts"
 gem "oauth-plugin", ">=0.4.0.pre1"
-gem 'edave-gcal4ruby'
+gem 'edave-gcal4ruby', ">=0.7.0"
 
 # For In-place-editing
 gem 'best_in_place'

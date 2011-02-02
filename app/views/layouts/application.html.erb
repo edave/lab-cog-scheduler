@@ -2,7 +2,7 @@
 <body>
 <div id="header-wrapper">
 <div class="application" id="header">
-	<a href="/"><div id="banner" class="tk-header">Lab Cog!</div></a>
+	<a href="/"><div id="banner" class="tk-header">Lab Cog <span class="text-style:italic">Scheduler</span></div></a>
 	<div class="messages">
 		<% if notice %><div class="notice"><%= notice %></div><% end %>
 	 	<% if alert %><div class="alert"><%= alert %></div><% end %>
@@ -10,17 +10,10 @@
 	<div class="tabs">
 		<div id="current_user"><%= current_user.user_name if current_user %></div>	
 		<ul>
-			<a href="/settings"><li>Settings</li></a>
-			<a href="/help"><li>Help</li></a>
-			<% if user_signed_in? %>
-			  <li>
-			  <%= link_to('Sign out', destroy_user_session_path) %>        
-			  </li>
-			<% else %>
-			  <li>
-			  <%= link_to('Sign in', new_user_session_path)  %>  
-			  </li>
-			<% end %>
+			<li id="settings" style="border-left:1px solid #222;" ><a href="/settings" title="Change your settings"><div>Settings</div></a></li>
+			<li id="help"><a href="/help" title="Get Help"><div>Help</div></a></li>
+			<li id="signin"><a href="<%= (user_signed_in?) ? destroy_user_session_path : new_user_session_path %>" /><div><%= (user_signed_in?) ? "Sign out" : "Sign in" %></div></a>
+			</li>
 		</ul>
 	</div>
 	</div>
