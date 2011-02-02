@@ -16,7 +16,7 @@
 <thead>
 	
 </thead>
-<tbody class="expired" style="display:none">
+<tbody class="expired" <% unless open_slots.length <= 0 %>style="display:none" <% end %>>
 <% expired_slots.each do |slot| %>
 	  <%= render(:partial => "slots/show", :locals => {:slot => slot})%>
 <% end %>
@@ -28,7 +28,7 @@
 </tbody>
 </table>
 <h3 id="no-slots-tag" style="text-align:center; <% unless slots.empty? %>display:none;<% end %>" >No Slots</h3>
-<h3 id="no-open-slots" style="text-align:center; <% unless open_slots.empty? and not slots.empty? %>display:none;<% end %>">No Future Slots</h3>
+<h3 id="no-open-slots" style="text-align:center; margin-top:10px; <% unless open_slots.empty? and not slots.empty? %>display:none;<% end %>">No Future Slots</h3>
 <% content_for(:deferred_js) do %>
 $("input#expired-slots-toggle").bind('change',function(){
 	$("table#slots tbody.expired").slideToggle();
