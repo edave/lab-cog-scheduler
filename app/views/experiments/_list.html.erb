@@ -4,6 +4,8 @@
 #%>
 <ul class="experiment-list">
 <% experiments.each do |experiment| %>
-	<a href="<%= experiment_path(experiment) %>"><li><span class="icon status-icon <%= experiment_status_class(experiment) %>"><%= experiment.name %></span></li></a>
+	<a href="<%= experiment_path(experiment) %>">
+		<li><span class="icon status-icon <%= experiment_status_class(experiment) %>"> </span><%= experiment.name %></li>
+	</a>
 <% end %>
 </ul>
