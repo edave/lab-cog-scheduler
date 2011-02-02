@@ -1,25 +1,25 @@
-<h1>Signup for a time to participate in<br /><%= @experiment.name %></h1>
+<h1>Signup for a time to participate in <%= @experiment.name %></h1>
 <br />
 <h2>Contact Information</h2>
-<small style="margin-top:10px">Your email is used solely to contact you about the experiment and is not shared with anyone.</small>
+<span style="margin-top:10px;">Your email is used solely to contact you about the experiment and is not shared with anyone.</span>
 <%= form_for(@subject, :html => {:autocomplete=>"off"}) do |f| %>
   <%= f.error_messages %>
-	<h3>Name<span style="color:red">*</span></h3>
+	<h3 class="field-label">Name<span style="color:red">*</span></h3>
 		<small><%= error_message_on :subject, :name,
                :prepend_text => "Name " %></small>
 	<%= f.text_field :name, :autocomplete => "off" %><br/>
 	
-	<h3>Email<span style="color:red">*</span></h3>
+	<h3 class="field-label">Email<span style="color:red">*</span></h3>
 	<small><%= error_message_on :subject, :email,
                :prepend_text => "Email " %></small>
 	<%= f.text_field :email, :autocomplete => "off" %><br />
 	
-	<h3>Phone Number (optional)</h3>
+	<h3 class="field-label">Phone Number (optional)</h3>
 		<small><%= error_message_on :subject, :phone,
                :prepend_text => "Phone " %></small>
 	<%= f.text_field :phone_number, :autocomplete => "off", :size=>12 %><br /><br />
 	
-	<h3>Time Slot<span style="color:red">*</span></h3>
+	<h3 class="field-label">Time Slot<span style="color:red">*</span></h3>
 	Select a time (the experiment will take approximately <%= @experiment.human_time_length %>)<br />
 		<small><%= error_message_on :subject, :time_slot,
                :prepend_text => "Time slot " %></small>
