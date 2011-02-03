@@ -105,7 +105,7 @@ class SubjectsController < ApplicationController
     if existing_subject
       @subject = existing_subject
     else
-      @subject = Subject.new(params[:subject])
+      @subject = Subject.create(params[:subject])
     end
     @slots = Slot.find_by_available(@experiment)
     @slot_id = params[:slot_id]
@@ -113,15 +113,10 @@ class SubjectsController < ApplicationController
     respond_to do |format|
       begin
       if @subject.valid? and !@slot.nil? and !@slot.filled?
-        @subject.transaction do
           @appointment = Appointment.new(:slot => @slot, :subject => @subject)
-          @appointment.transaction do
-            @subject.save!
-            @appointment.save!
+          @appointment.save!
              #flash[:notice] = 'Subject was successfully created.'
           format.html { redirect_to(:action => :confirmation, :id=>@subject.hashed_id, :slot_id => @slot.hashed_id) }
-          end
-       end
       else
         @subject = Subject.new(params[:subject]) #hack to hide existing subject's info
         if @slot == nil
@@ -132,7 +127,7 @@ class SubjectsController < ApplicationController
         format.html { render :action => "new" }
       end
     rescue ActiveRecord::RecordInvalid
-        if !@appointment != nil and !@appointment.valid?
+        if @appointment != nil and !@appointment.valid?
            @subject.errors.add(:appointment, " could not be scheduled, did you already sign up for this?")
         end
         format.html { render :action => "new" }

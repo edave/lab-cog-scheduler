@@ -34,7 +34,7 @@ ExperimentTracker::Application.configure do
   config.active_support.deprecation = :stderr
   
   config.action_mailer.default_url_options = { :host => 'localhost' }
-  
+  config.logger = Logger.new(Rails.root.join("log",Rails.env + ".log"),3,5*1024*1024)
   # Set the time to 6/12/2011, 12:25:00
   t = Time.local(2011, 6, 15, 12, 25, 0)
   Timecop.travel(t)

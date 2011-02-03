@@ -21,4 +21,7 @@ ExperimentTracker::Application.configure do
   config.active_support.deprecation = :log
   
   config.action_mailer.default_url_options = { :host => 'localhost:3000' }
+  
+  config.logger = Logger.new(Rails.root.join("log",Rails.env + ".log"),3,5*1024*1024)
+  
 end
