@@ -119,6 +119,7 @@ class SubjectsController < ApplicationController
           format.html { redirect_to(:action => :confirmation, :id=>@subject.hashed_id, :slot_id => @slot.hashed_id) }
       else
         @subject = Subject.new(params[:subject]) #hack to hide existing subject's info
+        @subject.valid?
         if @slot == nil
           @subject.errors.add(:time_slot, "Please select a time slot to participate in the experiment")
         elsif @slot.filled?

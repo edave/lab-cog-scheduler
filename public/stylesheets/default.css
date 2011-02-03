@@ -331,15 +331,21 @@ div.validation-success{
 	background-color: #D2F8CD;
 	padding: 4px;
 }
-div.validation-error{
+div.validation-error, div.formError{
 	border: 2px solid #ED7064;
 	background-color: #FADFDD;
 	padding:4px;
+	margin-top: 6px;
+	margin-bottom: 6px;
+	display: inline-block;
 }
 
 div.dialog{
 	display:none;
 }
+
+/* Forms */
+
 
 /* Icons */
 div.icon, span.icon{
