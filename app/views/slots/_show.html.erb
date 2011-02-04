@@ -16,11 +16,11 @@
 	</td>
 	<td class="last-child">
 		<% if slot.empty? %>
-		<span class="icon destroy-icon <% if slot.expired? %>disabled<% end %>" data-destroy-url="<%= slot_path(slot) %>" data-destroy-title="Delete <%= slot.human_date %>, <%= slot.human_time %>?" data-labcog-mapping="labcog.sch.slotDestroyFn" title="Delete"> </span>
+		<span class="icon destroy-icon <% if slot.expired? %>disabled<% end %>" data-destroy-url="<%= slot_path(slot) %>" data-destroy-title="Delete <%= slot.human_date %>, <%= slot.human_time %>?" data-labcog-mapping="slot.destroy" title="Delete"> </span>
 		<% elsif slot.cancelled? %>
 		<span class="icon cancelled-icon" title="Cancelled"> </span>
 		<% else %>
-		<span class="icon cancel-icon <% if slot.expired? %>disabled<% end %>" data-destroy-url="<%= cancel_slot_path(slot) %>" data-destroy-title="Cancel <%= slot.human_date %>, <%= slot.human_time %>?" data-labcog-mapping="labcog.sch.slotCancelFn" title="Cancel"> </span>
+		<span class="icon cancel-icon <% if slot.expired? %>disabled<% end %>" data-destroy-url="<%= cancel_slot_path(slot) %>" data-destroy-title="Cancel <%= slot.human_date %>, <%= slot.human_time %>?" data-labcog-mapping="slot.cancel" title="Cancel"> </span>
 		<% end %>
 		</td>
 </tr>

@@ -9,7 +9,20 @@ if (!window.console){
 }
 
 var labcog = {
-	sch: { exists: true },
+	sch: { exists: true,
+		   slot: { exists: true,
+				   destroy: { exists:true,
+					success:null,
+					error:null,
+					dialog:"destroy-dialog"
+				   },
+				   cancel: { exists: true,
+					success:null,
+					error:null,
+					dialog:"cancel-dialog"
+				   }
+				  } 
+		 },
 	tools: { exists: true}
 };
 
@@ -88,7 +101,7 @@ $('[data-collapse-element-id]').live('click', function(e){
 
 $('[data-destroy-url]').live('click', function(e){
 	var element = $(this);
-	var mapping = labcog.tools.getVariableFromString(element.attr("data-labcog-mapping"));
+	var mapping = labcog.tools.getVariableFromString(element.attr("data-labcog-mapping"), labcog.sch);
 	var dialog = $("div#" + mapping.dialog);
 	dialog.dialog('option', 'title', element.attr("data-destroy-title"));
 	dialog.dialog("option", 
@@ -110,35 +123,24 @@ $('[data-destroy-url]').live('click', function(e){
 	dialog.dialog('open');
 });
 
-labcog.sch.slotDestroySuccess = function(data, status, xhr){
+labcog.sch.slot.destroy.success = function(data, status, xhr){
 	$('[data-'+data[0]+'="'+data[1]+'"]').remove();
 	labcog.sch.updateSlotsFlavorText();
 };
-labcog.sch.slotDestroyError = function(){
+labcog.sch.slot.destroy.error = function(){
 	console.error("Error destroying slot");
 };
-labcog.sch.slotCancelSuccess = function(data,status,xhr){
+labcog.sch.slot.cancel.success = function(data,status,xhr){
 	var element = $('tr.slot[data-'+data[0]+'="'+data[1]+'"]');
 	var cancelIcon = element.find('span.cancel-icon');
 	cancelIcon.replaceWith('<span class="cancelled-icon icon"> </span>')
 	element.addClass('cancelled-slot');
 	element.effect('highlight', {}, 3000);
 };
-labcog.sch.slotCancelError = function(){
+labcog.sch.slot.cancel.error = function(){
 	console.error("Error Cancel");
 };
 
-labcog.sch.slotDestroyFn = {
-	success:labcog.sch.slotDestroySuccess,
-	error:labcog.sch.slotDestroyError,
-	dialog:"destroy-dialog"
-};
-
-labcog.sch.slotCancelFn = {
-	success:labcog.sch.slotCancelSuccess,
-	error:labcog.sch.slotCancelError,
-	dialog:"cancel-dialog"
-};
 labcog.sch.updateSlotsFlavorText = function(){
 	if($('table#slots > tbody.open tr').length < 1){
 		$('#no-open-slots').show();
@@ -167,8 +169,8 @@ labcog.tools.getVariableFromString = function (variableName, context) {
     var func = namespaces.pop();
     for (var i = 0; i < namespaces.length; i++) {
         context = context[namespaces[i]];
-    }
-    return context[func];
+	}
+	return context[func];
 }
 
 function passwordHelper(passwordElement, confirmElement, username){

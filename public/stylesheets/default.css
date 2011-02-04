@@ -71,8 +71,8 @@ div#header-wrapper{
 	-webkit-box-shadow: rgba(0,0,0,0.3) 0px 2px 2px;
 	-moz-box-shadow:  rgba(0,0,0,0.3) 0px 2px 2px;
 }
-div#header{
-
+a.banner:hover{
+	text-decoration:none;
 }
 
 div#header #banner{
