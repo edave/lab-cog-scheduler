@@ -18,6 +18,8 @@ class Experiment < ObfuscatedRecord
     validates_numericality_of :compensation, :only_integer => true, :greater_than => -1
     validates_numericality_of :num_subjects_per_slot, :only_integer => true, :greater_than => 0
   
+    # Instance Methods
+  
     def presence_of_desc
       errors.add(:desc, "is blank") if desc.to_s.blank?
     end
@@ -91,5 +93,25 @@ class Experiment < ObfuscatedRecord
   def can_modify?(user)
     return false if user == :false || user == nil
     return (user.id == self.user_id) || user.has_role?(:admin)
+  end
+  
+  # Class Methods
+  
+  def self.send_reminders
+    Experiment.find(:all, {:include => {:slots => :appointments}}) do |experiment|
+        day = DateTime.now.in_time_zone(experiment.time_zone).tomorrow
+        #log "Experiment: #{experiment.name}"
+        if experiment.is_occupied(day)
+          ExperimentNotifier.deliver_schedule(experiment, day)
+        end
+        slots = experiment.occupied_slots(day)
+        for slot in slots
+          #log "Slot: #{slot.human_datetime}"
+          
+         slot.appointments.each do |appointment|
+          AppointmentNotifier.deliver_reminder(appointment)
+         end
+        end
+    end
   end
 end

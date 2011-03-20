@@ -11,6 +11,7 @@ if (!window.console){
 var labcog = {
 	sch: { exists: true,
 		   slot: { exists: true,
+				   updateView: null,
 				   destroy: { exists:true,
 					success:null,
 					error:null,
@@ -20,10 +21,27 @@ var labcog = {
 					success:null,
 					error:null,
 					dialog:"cancel-dialog"
-				   }
-				  } 
+				   },
+				   create: { exists: true,
+					sucess:null,
+					error:null
+					}
+				  },
+			subject: { exists: true,
+				destroy: { exists: true,
+					success: null,
+					error: null,
+					dialog:"subject-destroy-dialog"},
+				create: { exists:true,
+					success: null,
+					error: null
+					}} 
 		 },
-	tools: { exists: true}
+	tools: { exists: true,
+		executeFunctionByName: null,
+		getVariableFromString: null,
+		serverError: null,
+		clientError: null}
 };
 
 $.ajaxSetup({
@@ -123,12 +141,24 @@ $('[data-destroy-url]').live('click', function(e){
 	dialog.dialog('open');
 });
 
+labcog.sch.slot.create.success = function(data, status, xhr){
+	console.log("Created Slot: ");
+	console.log(xhr);
+	$('table#slots > tbody.open:last').append(xhr.responseText);
+	$('tbody.open > tr:last').prev().effect('highlight', {}, 3000);
+	labcog.sch.slot.updateView();	
+};
+
+labcog.sch.slot.create.error = function(data, status, xhr){
+	labcog.tools.serverError("Creating Slot", null, null);
+};
+
 labcog.sch.slot.destroy.success = function(data, status, xhr){
 	$('[data-'+data[0]+'="'+data[1]+'"]').remove();
-	labcog.sch.updateSlotsFlavorText();
+	labcog.sch.slot.updateView();
 };
 labcog.sch.slot.destroy.error = function(){
-	console.error("Error destroying slot");
+	labcog.tools.serverError("Destroying Slot", null, null);
 };
 labcog.sch.slot.cancel.success = function(data,status,xhr){
 	var element = $('tr.slot[data-'+data[0]+'="'+data[1]+'"]');
@@ -138,10 +168,10 @@ labcog.sch.slot.cancel.success = function(data,status,xhr){
 	element.effect('highlight', {}, 3000);
 };
 labcog.sch.slot.cancel.error = function(){
-	console.error("Error Cancel");
+	labcog.tools.serverError("Cancelling Slot", null, null);
 };
 
-labcog.sch.updateSlotsFlavorText = function(){
+labcog.sch.slot.updateView = function(){
 	if($('table#slots > tbody.open tr').length < 1){
 		$('#no-open-slots').show();
 	}else if($('table#slots > tbody tr').length < 1){
@@ -151,6 +181,14 @@ labcog.sch.updateSlotsFlavorText = function(){
 		$('#no-slots-tag').hide();
 	}
 };
+
+labcog.tools.serverError = function(title, message, errorCode){
+	console.error("ServerError: "+title + "\nMessage: " + message + "\nError: " + errorCode)
+};
+
+labcog.tools.clientError = function(title, message, errorCode){
+	console.error("Client Error: "+title + "\nMessage: " + message + "\nError: " + errorCode)
+}
 
 // From http://stackoverflow.com/questions/359788/javascript-function-name-as-a-string
 labcog.tools.executeFunctionByName = function (functionName, context /*, args */) {

@@ -1,4 +1,5 @@
 require "bundler/capistrano"
+require "whenever/capistrano"
 
 default_run_options[:pty] = true
 set :application, "experiment-signup"

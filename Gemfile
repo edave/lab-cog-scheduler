@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.0.3'
+gem 'rails', '3.0.5'
 
 # Bundle edge Rails instead:
 gem 'mysql'
@@ -25,19 +25,16 @@ gem 'edave-gcal4ruby', ">=0.7.0"
 # For In-place-editing
 gem 'best_in_place'
 
+# Process Queueing
+gem 'delayed_job'
 
-# For Rooster
-gem 'daemons', '1.1.0'
-gem 'eventmachine', '>=0.12.10'
-gem 'chronic', '>=0.2.3', :require=> 'chronic'
+# Routine Job scheduling
+gem 'whenever', :require => false
 
 # For encrypting model attributes
 gem 'encryptor', '~>1.1.1', :require=> 'encryptor'
-gem 'attr_encrypted', '>=1.1.2', :require=> 'attr_encrypted'
-  
-# For background tasks
-gem 'rufus-scheduler', :require=> "rufus/scheduler"
-  
+gem 'attr_encrypted', '~>1.2', :require=> 'attr_encrypted'
+    
 # For Markdown text processing
 gem 'rdiscount'
 gem 'formatize'
@@ -64,7 +61,7 @@ group :development, :test do
   gem "watchr"
 
   # Testing Framework
-  gem "rspec-rails", ">= 2.3.1"
+  gem "rspec-rails", "~> 2.4"
   gem 'factory_girl_rails', ">=1.1.beta1"
   gem 'faker', ">=0.9.4"
 

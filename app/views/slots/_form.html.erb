@@ -28,12 +28,8 @@
 	<%= f.submit("Add", :class => "awesome blue") %></div>
 <% end %>
 <% content_for(:deferred_js) do %>
-$('.ajax-form')
-	.bind("ajax:success", function(evt, data, status, xhr){
-	$('table#slots > tbody.open:last').append(xhr.responseText);
-	$('tbody.open > tr:last').prev().effect('highlight', {}, 3000);
-	labcog.sch.updateSlotsFlavorText();
-});
+$('form#new_slot').bind("ajax:success", labcog.sch.slot.create.success);
+$('form#new_slot').bind("ajax:error", labcog.sch.slot.create.error);
 $('input#slot_date').datepicker({minDate: 0, showOtherMonths:true, dateFormat: 'mm/dd/y'});
-$('form.ajax-form').inputHintOverlay(0,0,true);
+$('form#new_slot').inputHintOverlay(0,0,true);
 <% end %>
