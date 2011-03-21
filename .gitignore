@@ -12,3 +12,4 @@ vendor/gems/doc
 vendor/gems/environment.rb
 *.pid
 tmp/*
+config/*.sql3

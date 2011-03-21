@@ -46,7 +46,7 @@ gem 'hoptoad_notifier', '>=2.2.0'
 # Bundle gems for the local environment. Make sure to
 # put test-only gems in this group so their generators
 # and rake tasks are available in development mode:
-group :development, :test do
+group:development, :test do
   # Server
   gem 'mongrel'
 
@@ -62,8 +62,10 @@ group :development, :test do
 
   # Testing Framework
   gem "rspec-rails", "~> 2.4"
+  #gem 'factory_girl', ">=2.0.0.beta1"
   gem 'factory_girl_rails', ">=1.1.beta1"
   gem 'faker', ">=0.9.4"
+  gem 'spork', '~>0.9.0.rc'
 
   # Time shifting for testing
   gem "timecop"

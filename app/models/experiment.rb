@@ -102,14 +102,14 @@ class Experiment < ObfuscatedRecord
         day = DateTime.now.in_time_zone(experiment.time_zone).tomorrow
         #log "Experiment: #{experiment.name}"
         if experiment.is_occupied(day)
-          ExperimentNotifier.deliver_schedule(experiment, day)
+          ExperimentNotifier.delay.schedule(experiment, day)
         end
         slots = experiment.occupied_slots(day)
         for slot in slots
           #log "Slot: #{slot.human_datetime}"
           
          slot.appointments.each do |appointment|
-          AppointmentNotifier.deliver_reminder(appointment)
+          AppointmentNotifier.delay.reminder(appointment)
          end
         end
     end

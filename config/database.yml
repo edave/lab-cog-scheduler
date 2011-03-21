@@ -31,7 +31,7 @@ test:
   adapter: sqlite3
   encoding: utf8
   reconnect: false
-  database: ":memory:"
+  database: config/experiment_test.sql3
   pool: 5
   verbosity: silent
 

@@ -109,6 +109,10 @@ describe Experiment do
      lambda {t.in_time_zone(@experiment.time_zone)}.should_not raise_error
    end
    
+   it "should remind participants and admins (no errors raised)" do
+     lambda {Experiment.send_reminders}.should_not raise_error
+   end
+   
    # Stub - Test interaction with slots
    
    # Stub - Test filled?
