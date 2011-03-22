@@ -11,7 +11,7 @@ class Location < ObfuscatedRecord
   validates_uniqueness_of :room, :scope => :building
   
   # ACL9 authorization support
-  acts_as_authorization_object
+  # acts_as_authorization_object
   
   def url
     return "http://whereis.mit.edu/?selection=#{building}&zoom=16"

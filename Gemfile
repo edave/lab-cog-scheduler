@@ -10,7 +10,6 @@ gem 'capistrano'
 
 # Add gems for authentication/authorization
 gem "devise", '1.1.3'
-gem "acl9"
 
 # For mail_style (css in emails)
 gem 'nokogiri', '>=1.4.1'

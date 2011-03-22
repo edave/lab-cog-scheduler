@@ -1,6 +1,6 @@
 class SlotsController < ApplicationController
   
-   respond_to :html, :json, :js
+  respond_to :html, :json
 
   def cancel
     @slot = Slot.obfuscated_query(params[:id]).includes(:experiment).first
@@ -13,7 +13,7 @@ class SlotsController < ApplicationController
     
     if @experiment.nil? or !@experiment.can_modify?(current_user)
       respond_to do |format|
-          format.js   {render :layout => false, :status => :unprocessable_entity }
+          format.json   {render :layout => false, :status => :unprocessable_entity }
           format.html { access_denied }
       end
     else
@@ -21,9 +21,9 @@ class SlotsController < ApplicationController
       @slot.cancel()
       @slot.save!
     end
-     respond_to do |format|
+    respond_to do |format|
         format.html { redirect_to(@slot.experiment) }
-        format.js   { render :json => ['slot',params[:id]].to_json, :layout => false }
+        format.json   { render :json => ['slot',params[:id]].to_json }
     end
   end
   end
@@ -49,11 +49,11 @@ class SlotsController < ApplicationController
     respond_with(@slot, :status => :created, :location => @slot) do |format|
         flash.now[:notice] = 'Slot was successfully created.'
         format.html { redirect_to(@slot.experiment) }
-        format.js   { render :partial => "slots/show", :locals => {:slot => @slot}, :layout => false, :status => :created }
+        format.json   { render :partial => "slots/show", :locals => {:slot => @slot}, :layout => false, :status => :created }
     end
     else
        respond_with(@slot.errors, :status => :unprocessable_entity) do |format|
-          format.js   {render :json => @slot.errors, :layout => false, :status => :unprocessable_entity }
+          format.json   {render :json => @slot.errors, :layout => false, :status => :unprocessable_entity }
           format.html { render :action => "new" }
         end
     end
@@ -64,8 +64,8 @@ class SlotsController < ApplicationController
   def update
     @slot = Slot.obfuscated(params[:id]).includes(:experiment)
     if @slot.nil?
-      render_404
-      return
+      #render_404
+      #return
     end
     @experiment = @slot.experiment
     page_group(@experiment.user.group)
@@ -98,20 +98,19 @@ class SlotsController < ApplicationController
     @experiment = @slot.experiment
     page_group(@experiment.user.group)
     
-    if @experiment.nil? or !@experiment.can_modify?(current_user)
-      respond_to do |format|
-          format.js   {render :layout => false, :status => :unprocessable_entity }
-          format.html { access_denied }
-      end
-    else
+    # if @experiment.nil? or !@experiment.can_modify?(current_user)
+    #   respond_to do |format|
+    #       format.json   {render :layout => false, :status => :unprocessable_entity }
+    #       format.html { access_denied }
+    #   end
+    # else
     if @experiment.can_modify?(current_user) #redundant
       @slot.destroy
     end
-     respond_to do |format|
-        format.html { redirect_to(@slot.experiment) }
-        format.js   { render :json => ['slot',params[:id]].to_json, :layout => false }
+    respond_to do |format|
+            format.html { redirect_to(@slot.experiment) }
+            format.json   { render :json => ['slot',params[:id]].to_json, :layout => false }
     end
-  end
   end
   
 end

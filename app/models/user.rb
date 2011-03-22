@@ -10,7 +10,7 @@ class User < ObfuscatedRecord
   has_many :google_calendars
 
   # Add ACL9's support for roles/authorization
-  acts_as_authorization_subject  :association_name => :roles
+  #  acts_as_authorization_subject  :association_name => :roles
 
   # Setup accessible (or protected) attributes for your model
   attr_accessible :email, :password, :password_confirmation, :remember_me, :user_name, :name, :phone

@@ -11,7 +11,7 @@ class Appointment < ActiveRecord::Base
   validate :limit_appointments
 
   # ACL9 authorization support
-  acts_as_authorization_object
+  # acts_as_authorization_object
   
   def limit_appointments
     return false if slot == nil || slot.experiment == nil

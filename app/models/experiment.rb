@@ -5,7 +5,7 @@ class Experiment < ObfuscatedRecord
     has_many :slots, :order => :time, :dependent => :destroy
     
     # ACL9 authorization support
-    acts_as_authorization_object
+    # acts_as_authorization_object
     
     acts_as_markdown :desc
     

@@ -7,7 +7,7 @@
 <% slot ||= Slot.new 
    new_slot = slot.new_record?
    experiment ||= slot.experiment%>
-<%= form_for(slot, :html => { :class=>"ajax-form"}, :remote => true, :disable_with => (new_slot ? "Adding..." : "Saving...")) do |f| %>
+<%= form_for(slot, :format => :json, :html => { :class=>"ajax-form"}, :remote => true, :disable_with => (new_slot ? "Adding..." : "Saving...")) do |f| %>
 	<input type="hidden" name="experiment_id" value="<%= experiment.hashed_id %>" />
 	<div class="validation-error" style="display:none"></div>
 	  <div>

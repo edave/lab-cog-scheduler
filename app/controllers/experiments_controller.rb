@@ -2,18 +2,18 @@ class ExperimentsController < ApplicationController
   
   before_filter :authenticate_user!, :except => [:participate, :filled]
   
-  access_control do
-   allow all
-   actions :index, :show, :edit, :create, :new, :update, :destroy do
-      allow :experimenter
-   end
-   
-   actions :admin do
-     allow :admin
-     deny all
-   end
-    
-  end
+  # access_control do
+  #  allow all
+  #  actions :index, :show, :edit, :create, :new, :update, :destroy do
+  #     allow :experimenter
+  #  end
+  #  
+  #  actions :admin do
+  #    allow :admin
+  #    deny all
+  #  end
+  #   
+  # end
   
   cache_sweeper :experiment_sweeper, :only => [ :index, :show, :participate ]
 

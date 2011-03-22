@@ -141,10 +141,10 @@ $('[data-destroy-url]').live('click', function(e){
 	dialog.dialog('open');
 });
 
-labcog.sch.slot.create.success = function(data, status, xhr){
-	console.log("Created Slot: ");
-	console.log(xhr);
-	$('table#slots > tbody.open:last').append(xhr.responseText);
+labcog.sch.slot.create.success = function(data, responseTxt, status){
+	//console.log("Created Slot: ");
+	//console.log(responseTxt);
+	$('table#slots > tbody.open:last').append(responseTxt);
 	$('tbody.open > tr:last').prev().effect('highlight', {}, 3000);
 	labcog.sch.slot.updateView();	
 };
