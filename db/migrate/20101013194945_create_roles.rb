@@ -3,9 +3,9 @@ class CreateRoles < ActiveRecord::Migration
   # Implements ACL9's version of Roles
   def self.up
     create_table :roles do |t|
-      t.string   :name,              :limit => 40
-      t.string   :authorizable_type, :limit => 40
-      t.integer  :authorizable_id
+      t.string   :title,        :limit => 40
+      t.string   :description,  :limit => 255
+      t.string   :slug,         :limit => 40
       t.timestamps
     end
     
@@ -18,5 +18,6 @@ class CreateRoles < ActiveRecord::Migration
 
   def self.down
     drop_table :roles
+    drop_table :roles_users
   end
 end

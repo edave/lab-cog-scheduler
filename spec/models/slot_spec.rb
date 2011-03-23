@@ -81,5 +81,18 @@ describe Slot do
     @past_slot.open?.should == false
     @filled_slot.open?.should == false
   end
+  
+  it "should have a timezone" do
+    @slot.time_zone.should_not be nil
+  end
+  
+  it "should parse time for timezone" do
+    slot = Slot.new()
+    slot.experiment = Factory(:experiment)
+    puts slot.time_zone
+    slot.parse_datetime('03/25/11 12:00 PM')
+    slot.time.should_not be nil
+    slot.human_time.should == "12:00 PM"
+  end
 
 end

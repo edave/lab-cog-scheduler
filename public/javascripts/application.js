@@ -45,8 +45,8 @@ var labcog = {
 };
 
 $.ajaxSetup({
-  beforeSend: function(xhr) {
-    xhr.setRequestHeader("Accept", "text/javascript");
+  beforeSend : function(xhr){
+    xhr.setRequestHeader("Accept", "application/json")
   }
 });
 
@@ -141,10 +141,11 @@ $('[data-destroy-url]').live('click', function(e){
 	dialog.dialog('open');
 });
 
-labcog.sch.slot.create.success = function(data, responseTxt, status){
-	//console.log("Created Slot: ");
-	//console.log(responseTxt);
-	$('table#slots > tbody.open:last').append(responseTxt);
+labcog.sch.slot.create.success = function(evt, data, status, xhr){
+	console.log("Created Slot: ");
+	console.log(xhr);
+	console.log(data)
+	$('table#slots > tbody.open:last').append($.parseJSON(xhr.responseText).html);
 	$('tbody.open > tr:last').prev().effect('highlight', {}, 3000);
 	labcog.sch.slot.updateView();	
 };

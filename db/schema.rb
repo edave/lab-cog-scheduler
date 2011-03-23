@@ -65,6 +65,7 @@ ActiveRecord::Schema.define(:version => 20110314015942) do
     t.integer  "lock_version",                         :default => 0
     t.integer  "google_calendar_id"
     t.integer  "num_subjects_per_slot",                :default => 1
+    t.string   "time_zone"
   end
 
   add_index "experiments", ["hashed_id"], :name => "index_experiments_on_hashed_id"
@@ -114,9 +115,9 @@ ActiveRecord::Schema.define(:version => 20110314015942) do
   add_index "locations", ["hashed_id"], :name => "index_locations_on_hashed_id"
 
   create_table "roles", :force => true do |t|
-    t.string   "name",              :limit => 40
-    t.string   "authorizable_type", :limit => 40
-    t.integer  "authorizable_id"
+    t.string   "title",       :limit => 40
+    t.string   "description"
+    t.string   "slug",        :limit => 40
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -191,6 +192,7 @@ ActiveRecord::Schema.define(:version => 20110314015942) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "group_id",                            :default => 0
+    t.string   "time_zone"
   end
 
   add_index "users", ["confirmation_token"], :name => "index_users_on_confirmation_token", :unique => true

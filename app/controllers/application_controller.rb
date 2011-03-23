@@ -6,7 +6,8 @@ class ApplicationController < ActionController::Base
   protect_from_forgery # See ActionController::RequestForgeryProtection for details
   
   rescue_from 'Acl9::AccessDenied', :with => :access_denied
-  
+  before_filter :correct_safari_and_ie_accept_headers
+  before_filter :set_xhr_flash
   before_filter :set_current_user
   
   layout 'application'

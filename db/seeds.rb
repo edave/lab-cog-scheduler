@@ -7,10 +7,10 @@
 #   Major.create(:name => 'Daley', :city => cities.first)
 
 # Setup site-wide roles
-admin = Role.new(:name => "Admin", :description => "Overall site admin")
+admin = Role.new(:title => "Administrator", :description => "Overall site admin")
 admin.slug = "admin"
 admin.save!
 
-experimenter = Role.new(:name => "Experimenter", :description => "Base experimenter")
-experimenter.slug = "experiment"
+experimenter = Role.new(:title => "Experimenter", :description => "Base experimenter")
+experimenter.slug = "experimenter"
 experimenter.save!

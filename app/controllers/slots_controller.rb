@@ -43,16 +43,21 @@ class SlotsController < ApplicationController
     @slot.experiment = experiment
     
     @slot.parse_datetime([params[:slot][:date], params[:slot][:time_hour] + ":" + params[:slot][:time_min],
-                              params[:slot][:time_12h], experiment.time_zone].join(" "))
+                              params[:slot][:time_12h]].join(" "))
     
     if @slot.save
-    respond_with(@slot, :status => :created, :location => @slot) do |format|
+    #respond_with(@slot, :status => :created, :location => @slot) 
+    respond_to do |format|
         flash.now[:notice] = 'Slot was successfully created.'
         format.html { redirect_to(@slot.experiment) }
-        format.json   { render :partial => "slots/show", :locals => {:slot => @slot}, :layout => false, :status => :created }
+        html_snippet = render_to_string(:partial => "slots/show.html.erb", 
+                                            :locals => {:slot => @slot}, 
+                                            :layout => false)
+        format.json   { render :json => {:html => html_snippet}, :layout => false, :status => :created }
     end
     else
-       respond_with(@slot.errors, :status => :unprocessable_entity) do |format|
+       #respond_with(@slot.errors, :status => :unprocessable_entity) 
+       respond_to do |format|
           format.json   {render :json => @slot.errors, :layout => false, :status => :unprocessable_entity }
           format.html { render :action => "new" }
         end
