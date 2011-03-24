@@ -7,4 +7,8 @@ class ConsumerToken < ActiveRecord::Base
   # Modify this with class_name etc to match your application
   belongs_to :user
   
+  def as_json(options={})
+    super(:only => [:id, :token])
+  end
+  
 end

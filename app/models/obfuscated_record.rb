@@ -13,4 +13,9 @@ class ObfuscatedRecord < ActiveRecord::Base
   def self.find_by_obfuscated_query!(hashed_id)
     where(:hashed_id => hashed_id)
   end
+  
+  def as_json(options={})
+    new_opts = {:only => [:id]}.merge(options)
+    super(new_opts)
+  end
 end

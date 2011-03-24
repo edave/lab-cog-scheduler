@@ -28,12 +28,17 @@
 	<div id="sidebar" class="column-left tk-header">
 	<div class="upcoming box">
 		<div class="title">Upcoming</div>
+		<% upcoming_slots = Slot.upcoming(current_user) 
+			if upcoming_slots.empty? %>
+			<div>Nothing scheduled</div>
+		<% else %>
 		<ul class="slots-list">
-		<% Slot.limit(3).each do |slot|%>
+		<% upcoming_slots.each do |slot|%>
 		<li><%= slot.human_day_of_week %> - <%= slot.human_time %><br />
 			<span class="experiment"><%= slot.experiment.name %>
 		</li>
-		<% end %>
+		<% end 
+		end %>
 		</ul>
 	</div>
 	<div class="experiments box">

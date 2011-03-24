@@ -10,9 +10,8 @@ class Appointment < ActiveRecord::Base
   
   validate :limit_appointments
 
-  # ACL9 authorization support
-  # acts_as_authorization_object
-  
+  attr_accessible :slot_id, :subject_id
+
   def limit_appointments
     return false if slot == nil || slot.experiment == nil
     if slot.appointments.count >= slot.experiment.num_subjects_per_slot
@@ -20,6 +19,10 @@ class Appointment < ActiveRecord::Base
       return false
     end
     return true
+  end
+  
+  def as_json(options={})
+    super(:only => [:id, :subject_id, :slot_id])
   end
 
 end

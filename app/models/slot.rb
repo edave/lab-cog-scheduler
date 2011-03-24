@@ -2,11 +2,11 @@ class Slot < ObfuscatedRecord
   belongs_to :experiment
   has_many :appointments, :dependent => :destroy
   has_many :subjects, :through => :appointments
-  
-  default_timezone = :utc
-  
+   
   validates_presence_of :experiment
   validates_presence_of :time
+  
+  attr_accessible :time
   attr_readonly :experiment
   
   
@@ -15,6 +15,8 @@ class Slot < ObfuscatedRecord
   scope :find_by_available, lambda { |e| where(:appointments_count => 0...e.num_subjects_per_slot,:cancelled => false, :experiment_id => e.id, :time => (Time.zone.now+e.slot_close_time.minutes)..(Time.zone.now + 1.years)).order('time') }
   scope :find_by_full, lambda { |e| where(:appointments_count => e.num_subjects_per_slot, :cancelled => false, :experiment_id => e.id).order('time') }
   scope :find_by_experiment, lambda { |e| where(:experiment_id => e).includes(:experiment)}
+  
+  # Instance Methods
   
   def open?
     return (!self.expired? and !self.filled?)
@@ -101,6 +103,21 @@ class Slot < ObfuscatedRecord
   def human_time
     return "---" if time.nil? 
     return time_in_time_zone.strftime("%I:%M %p")
+  end
+  
+  # Class Methods
+  
+  def self.upcoming(user)
+    experiments = Experiment.where(:user_id => user.id).includes(:slots)
+    slots = Array.new()
+    experiments.each do |experiment|
+      slots.concat(experiment.slots_after())
+    end
+    # Organize slots by time
+    # slots.sort_by!{|slot|
+    #       
+    #     }
+    return slots
   end
   
 end

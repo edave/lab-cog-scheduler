@@ -9,9 +9,6 @@ class User < ObfuscatedRecord
   has_one  :google_token, :class_name=>"GoogleToken", :dependent=>:destroy
   has_many :google_calendars
 
-  # Add ACL9's support for roles/authorization
-  #  acts_as_authorization_subject  :association_name => :roles
-
   # Setup accessible (or protected) attributes for your model
   attr_accessible :email, :password, :password_confirmation, :remember_me, :user_name, :name, :phone
   attr_readonly :user_name
@@ -60,6 +57,10 @@ class User < ObfuscatedRecord
       return (quality and not_common and not_same)
     end
    return true
+  end
+  
+  def as_json(options={})
+    super(:only => [:email, :user_name, :phone, :name])
   end
   
   private

@@ -3,9 +3,8 @@ class Experiment < ObfuscatedRecord
     belongs_to :google_calendar
     belongs_to :location
     has_many :slots, :order => :time, :dependent => :destroy
-    
-    # ACL9 authorization support
-    # acts_as_authorization_object
+     
+    attr_accessible :name, :desc, :time_length, :num_subjects, :compensation, :num_subjects_per_slot
     
     acts_as_markdown :desc
     
@@ -19,6 +18,10 @@ class Experiment < ObfuscatedRecord
     validates_numericality_of :num_subjects_per_slot, :only_integer => true, :greater_than => 0
   
     # Instance Methods
+  
+    def as_json(options={})
+      super(:only => [:name, :desc, :time_length, :num_subjects, :compensation, :num_subjects_per_slot])
+    end
   
     def presence_of_desc
       errors.add(:desc, "is blank") if desc.to_s.blank?
@@ -40,6 +43,20 @@ class Experiment < ObfuscatedRecord
         occupied << slot if slot.occupied?
       end
       return occupied
+  end
+  
+  def slots_after(datetime=nil)
+    datetime ||= DateTime.now
+    after_index = nil
+    self.slots.each_index do |i| # relies on slots being ordered by time ASC
+      if slots[i].time >= datetime
+        after_index = i
+        break
+      end
+    end
+    
+    return slots[after_index..slots.count - 1] unless after_index == nil
+    return Array.new()
   end
   
   def expired?

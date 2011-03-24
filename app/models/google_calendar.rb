@@ -13,6 +13,10 @@ class GoogleCalendar < ObfuscatedRecord
   
   validate :confirm_calendar
   
+  def as_json(options={})
+    super(:only => [:name])
+  end
+  
   def self.calendars(accesstoken)
     service = self.get_service(accesstoken)
     unless service == nil

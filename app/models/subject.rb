@@ -22,4 +22,8 @@ class Subject < ObfuscatedRecord
     end
   end
   
+  def as_json(options={})
+    super(:only => [:email, :name, :phone_number])
+  end
+  
 end
